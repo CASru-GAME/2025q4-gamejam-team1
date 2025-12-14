@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 154299615}
   - component: {fileID: 154299614}
   - component: {fileID: 154299613}
-  - component: {fileID: 154299612}
+  - component: {fileID: 154299617}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -139,22 +139,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &154299612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 154299611}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b893fd1a162036149b35c595486c20ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Inventory
-  capacity: 30
-  quickSlotCount: 5
-  itemSpacePrefab: {fileID: 3035411652190993417, guid: a39d6715f46e6e14fbd076cbe6cf0d1f, type: 3}
-  itemDatabase: {fileID: 11400000, guid: 939506d9c4d7ef44a9dd609f16d68e5e, type: 2}
 --- !u!114 &154299613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,6 +221,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &154299617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 154299611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b893fd1a162036149b35c595486c20ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  capacity: 30
+  quickSlotCount: 5
+  itemSpacePrefab: {fileID: 3035411652190993417, guid: a39d6715f46e6e14fbd076cbe6cf0d1f, type: 3}
+  itemDatabase: {fileID: 11400000, guid: 939506d9c4d7ef44a9dd609f16d68e5e, type: 2}
+  inventoryCanvas: {fileID: 154299615}
 --- !u!1 &175894022
 GameObject:
   m_ObjectHideFlags: 0

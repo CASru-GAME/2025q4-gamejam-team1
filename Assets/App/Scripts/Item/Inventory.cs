@@ -1,15 +1,18 @@
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
+    
     [SerializeField] private int capacity;
     [SerializeField] private int quickSlotCount;
     private ItemModel[] itemModels;
     private ItemInInventory[] itemInInventory;
     [SerializeField] private GameObject itemSpacePrefab;
     [SerializeField] private ItemDatabase itemDatabase;
+    [SerializeField] private Canvas inventoryCanvas;
 
     private void Awake()
     {
@@ -18,7 +21,7 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < capacity; i++)
         {
             GameObject itemSpace = Instantiate(itemSpacePrefab, transform);
-            itemSpace.transform.SetParent(transform);
+            itemSpace.transform.SetParent(inventoryCanvas.transform);
             if(i < quickSlotCount)
                 itemSpace.GetComponent<RectTransform>().anchoredPosition = new Vector2(-400 + i * 50, -150);
             else
@@ -34,6 +37,15 @@ public class Inventory : MonoBehaviour
         AddItem(4, 1);
         AddItem(5, 1);
         AddItem(6, 1);
+    }
+
+    private void Update()
+    {
+        var current = Keyboard.current;
+        if (current == null) return;
+
+        if (current.eKey.wasReleasedThisFrame)
+            inventoryCanvas.enabled = !inventoryCanvas.enabled;
     }
 
     public void AddItem(int itemID, int count)
