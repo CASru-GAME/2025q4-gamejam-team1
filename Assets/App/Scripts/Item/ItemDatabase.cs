@@ -61,4 +61,36 @@ public class ItemDatabase : ScriptableObject
                 return itemData.SpecialStatusString;
         return null;
     }
+
+    public bool IsItemType(int itemID, ItemData.ItemType itemType)
+    {
+        foreach (var itemData in itemDatas)
+            if (itemData.ID == itemID)
+                return itemData.IType == itemType;
+        return false;
+    }
+
+    public int GetPower(int itemID)
+    {
+        foreach (var itemData in itemDatas)
+            if (itemData.ID == itemID)
+                return itemData.Power;
+        return -1;
+    }
+
+    public int GetDefense(int itemID)
+    {
+        foreach (var itemData in itemDatas)
+            if (itemData.ID == itemID)
+                return itemData.Defence;
+        return -1;
+    }
+
+    public int GetMoveSpeed(int itemID)
+    {
+        foreach (var itemData in itemDatas)
+            if (itemData.ID == itemID)
+                return itemData.MoveSpeed;
+        return -1;
+    }
 }

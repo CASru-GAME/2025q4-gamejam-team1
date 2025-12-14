@@ -55,6 +55,7 @@ public class ItemInInventory : MonoBehaviour
 
     public void SwapItem()
     {
+        if(!Inventory.Instance.CanSwap(index)) return;
         Inventory.Instance.SwapItem(index);
         if(isEmpty) HideInfo();
         else ShowInfo();
