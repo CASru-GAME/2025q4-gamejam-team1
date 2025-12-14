@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
-    
     [SerializeField] private int capacity;
     [SerializeField] private int quickSlotCount;
     private ItemModel[] itemModels;
@@ -13,6 +12,9 @@ public class Inventory : MonoBehaviour
     [SerializeField] private GameObject itemSpacePrefab;
     [SerializeField] private ItemDatabase itemDatabase;
     [SerializeField] private Canvas inventoryCanvas;
+    private ItemModel selectedItemModel;
+    [SerializeField] private SelectedItem selectedItem;
+    [SerializeField] private Canvas selectedItemCanvas;
 
     private void Awake()
     {
@@ -28,7 +30,7 @@ public class Inventory : MonoBehaviour
                 itemSpace.GetComponent<RectTransform>().anchoredPosition = new Vector2(-400 + i % quickSlotCount * 50, 200 - i / quickSlotCount * 50);
             
             itemInInventory[i] = itemSpace.GetComponent<ItemInInventory>();
-            itemInInventory[i].GetEmpty();
+            itemInInventory[i].Initialize(this, i);
         }
 
         AddItem(1, 1);
@@ -37,6 +39,9 @@ public class Inventory : MonoBehaviour
         AddItem(4, 1);
         AddItem(5, 1);
         AddItem(6, 1);
+
+        inventoryCanvas.enabled = false;
+        selectedItemCanvas.enabled = false;
     }
 
     private void Update()
@@ -45,7 +50,10 @@ public class Inventory : MonoBehaviour
         if (current == null) return;
 
         if (current.eKey.wasReleasedThisFrame)
+        {
             inventoryCanvas.enabled = !inventoryCanvas.enabled;
+            selectedItemCanvas.enabled = !selectedItemCanvas.enabled;
+        }
     }
 
     public void AddItem(int itemID, int count)
@@ -77,15 +85,31 @@ public class Inventory : MonoBehaviour
                     int diff = itemDatabase.GetMaxStack(itemID);
                     tmpCount -= diff;
                     itemModels[i] = ItemModel.AddNew(itemID, diff);
-                    itemInInventory[i].AddNew(itemID, diff);
+                    itemInInventory[i].AddNew(itemID, diff, i);
                 }
                 else
                 {
                     itemModels[i] = ItemModel.AddNew(itemID, tmpCount);
-                    itemInInventory[i].AddNew(itemID, tmpCount);
+                    itemInInventory[i].AddNew(itemID, tmpCount, i);
                     return;
                 }
             }
+    }
+
+    public void SwapItem(int index)
+    {
+        (itemModels[index], selectedItemModel) = (selectedItemModel, itemModels[index]);
+        if (itemModels[index] == null)
+            itemInInventory[index].GetEmpty();
+        else
+            itemInInventory[index].AddNew(itemModels[index].ItemID, itemModels[index].Count, index);
+        selectedItem.SetSprite(selectedItemModel == null ? -1 : selectedItemModel.ItemID);
+    }
+
+    public int GetSelectedItemID()
+    {
+        if (selectedItemModel == null) return -1;
+        return selectedItemModel.ItemID;
     }
 }
 
