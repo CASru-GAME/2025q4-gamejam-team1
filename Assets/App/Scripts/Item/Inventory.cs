@@ -15,9 +15,12 @@ public class Inventory : MonoBehaviour
     private ItemModel selectedItemModel;
     [SerializeField] private SelectedItem selectedItem;
     [SerializeField] private Canvas selectedItemCanvas;
+    private static Inventory instance;
+    public static Inventory Instance => instance;
 
     private void Awake()
     {
+        instance = this;
         itemModels = new ItemModel[capacity];
         itemInInventory = new ItemInInventory[capacity];
         for (int i = 0; i < capacity; i++)
@@ -30,7 +33,7 @@ public class Inventory : MonoBehaviour
                 itemSpace.GetComponent<RectTransform>().anchoredPosition = new Vector2(-400 + i % quickSlotCount * 50, 200 - i / quickSlotCount * 50);
             
             itemInInventory[i] = itemSpace.GetComponent<ItemInInventory>();
-            itemInInventory[i].Initialize(this, i);
+            itemInInventory[i].Initialize(i);
         }
 
         AddItem(1, 1);
@@ -50,9 +53,33 @@ public class Inventory : MonoBehaviour
         if (current == null) return;
 
         if (current.eKey.wasReleasedThisFrame)
+            if (inventoryCanvas.enabled)
+                HideInventory();
+            else
+                ShowInventory();
+    }
+
+    private void ShowInventory()
+    {
+        inventoryCanvas.enabled = true;
+        selectedItemCanvas.enabled = true;
+    }
+
+    private void HideInventory()
+    {
+        inventoryCanvas.enabled = false;
+        selectedItemCanvas.enabled = false;
+        DropSelectedItem();
+    }
+
+    public void DropSelectedItem()
+    {
+        if (selectedItemModel != null)
         {
-            inventoryCanvas.enabled = !inventoryCanvas.enabled;
-            selectedItemCanvas.enabled = !selectedItemCanvas.enabled;
+            Vector2 randomOffset = new Vector2(UnityEngine.Random.Range(-0.2f, 0.2f), UnityEngine.Random.Range(-0.2f, 0.2f));
+            ItemInstantiater.InstantiateItem((Vector2)Camera.main.transform.position + randomOffset, selectedItemModel.ItemID, selectedItemModel.Count);
+            selectedItemModel = null;
+            selectedItem.SetSprite(-1);
         }
     }
 

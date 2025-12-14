@@ -10,7 +10,6 @@ public class ItemInInventory : MonoBehaviour
     [SerializeField] private GameObject infoPanel;
     [SerializeField] private Text infoText;
     private int index;
-    private Inventory inventory;
     private bool isEmpty;
 
     public void ShowInfo()
@@ -40,9 +39,8 @@ public class ItemInInventory : MonoBehaviour
         countText.text = newCount.ToString();
     }
 
-    public void Initialize(Inventory inventory, int index)
+    public void Initialize(int index)
     {
-        this.inventory = inventory;
         this.index = index;
         GetEmpty();
     }
@@ -57,7 +55,7 @@ public class ItemInInventory : MonoBehaviour
 
     public void SwapItem()
     {
-        inventory.SwapItem(index);
+        Inventory.Instance.SwapItem(index);
         if(isEmpty) HideInfo();
         else ShowInfo();
     }
