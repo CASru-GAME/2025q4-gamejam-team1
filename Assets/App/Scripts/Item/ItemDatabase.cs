@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ using UnityEngine;
 public class ItemDatabase : ScriptableObject
 {
     [SerializeField] private ItemData[] itemDatas;
+    [SerializeField] private CraftData[] craftDatas;
 
     public string GetName(int itemID)
     {
@@ -93,4 +95,47 @@ public class ItemDatabase : ScriptableObject
                 return itemData.MoveSpeed;
         return -1;
     }
+
+    public ItemAndCount[] GetCraftRequiredItems(int craftID)
+    {
+        foreach (var craftData in craftDatas)
+            if (craftData.CraftID == craftID)
+                return craftData.RequiredItems;
+        return null;
+    }
+
+    public ItemAndCount GetCraftResultItem(int craftID)
+    {
+        foreach (var craftData in craftDatas)
+            if (craftData.CraftID == craftID)
+                return craftData.ResultItem;
+        return null;
+    }
+
+    public int GetCraftDataCount()
+    {
+        return craftDatas.Length;
+    }
+}
+
+[Serializable]
+class CraftData
+{
+    [SerializeField] private int craftID;
+    [SerializeField] private ItemAndCount resultItem;
+    [SerializeField] private ItemAndCount[] requiredItems;
+
+    public int CraftID => craftID;
+    public ItemAndCount ResultItem => resultItem;
+    public ItemAndCount[] RequiredItems => requiredItems;
+}
+
+[Serializable]
+public class ItemAndCount
+{
+    [SerializeField] private ItemData itemData;
+    [SerializeField] private int count;
+
+    public ItemData ItemData => itemData;
+    public int Count => count;
 }

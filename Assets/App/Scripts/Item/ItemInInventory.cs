@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class ItemInInventory : MonoBehaviour
 {
-    [SerializeField]private ItemDatabase itemDatabase;
+    [SerializeField] private ItemDatabase itemDatabase;
     [SerializeField] private GameObject iconObject;
     [SerializeField] private Image iconImage;
     [SerializeField] private Text countText;

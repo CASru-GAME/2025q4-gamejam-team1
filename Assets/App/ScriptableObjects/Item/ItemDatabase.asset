@@ -19,3 +19,41 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 41be089f78b97524c9f1c44a3a282b22, type: 2}
   - {fileID: 11400000, guid: bec21fbe7ae801c4da544a212e5015c9, type: 2}
   - {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
+  craftDatas:
+  - craftID: 1
+    resultItem:
+      itemData: {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
+      count: 1
+    requiredItems:
+    - itemData: {fileID: 11400000, guid: 851de120302f32444bf9a7a872d91444, type: 2}
+      count: 3
+  - craftID: 2
+    resultItem:
+      itemData: {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
+      count: 2
+    requiredItems:
+    - itemData: {fileID: 11400000, guid: c9815b39607f7ee4594ab983138bf4f5, type: 2}
+      count: 5
+  - craftID: 3
+    resultItem:
+      itemData: {fileID: 11400000, guid: c9815b39607f7ee4594ab983138bf4f5, type: 2}
+      count: 5
+    requiredItems:
+    - itemData: {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
+      count: 2
+  - craftID: 4
+    resultItem:
+      itemData: {fileID: 11400000, guid: 851de120302f32444bf9a7a872d91444, type: 2}
+      count: 4
+    requiredItems:
+    - itemData: {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
+      count: 1
+  - craftID: 5
+    resultItem:
+      itemData: {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
+      count: 3
+    requiredItems:
+    - itemData: {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
+      count: 1
+    - itemData: {fileID: 11400000, guid: 851de120302f32444bf9a7a872d91444, type: 2}
+      count: 1

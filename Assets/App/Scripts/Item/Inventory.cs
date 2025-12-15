@@ -13,6 +13,8 @@ public class Inventory : MonoBehaviour
     [SerializeField] private ItemDatabase itemDatabase;
     [SerializeField] private Canvas inventoryCanvas;
     [SerializeField] private Canvas quickCanvas;
+    [SerializeField] private GameObject craftPanelPrefab;
+    [SerializeField] private Canvas craftCanvas;
     private ItemModel selectedItemModel;
     [SerializeField] private SelectedItem selectedItem;
     [SerializeField] private Canvas selectedItemCanvas;
@@ -24,6 +26,7 @@ public class Inventory : MonoBehaviour
         instance = this;
         itemModels = new ItemModel[capacity + 3];
         itemInInventory = new ItemInInventory[capacity + 3];
+        
         for (int i = 0; i < capacity + 3; i++)
         {
             GameObject itemSpace = Instantiate(itemSpacePrefab, transform);
@@ -41,6 +44,15 @@ public class Inventory : MonoBehaviour
             itemInInventory[i].Initialize(i);
         }
 
+        int craftCount = itemDatabase.GetCraftDataCount();
+        for (int i = 0; i < craftCount; i++)
+        {
+            GameObject craftPanel = Instantiate(craftPanelPrefab, transform);
+            craftPanel.transform.SetParent(craftCanvas.transform);
+            craftPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(-80 + i % 3 * 160, 150 - i / 3 * 50);
+            craftPanel.GetComponent<CraftPanel>().Initialize(i + 1);
+        }
+
         AddItem(1, 1);
         AddItem(2, 2);
         AddItem(3, 1);
@@ -50,6 +62,7 @@ public class Inventory : MonoBehaviour
 
         inventoryCanvas.enabled = false;
         selectedItemCanvas.enabled = false;
+        craftCanvas.enabled = false;
     }
 
     private void Update()
@@ -92,12 +105,14 @@ public class Inventory : MonoBehaviour
     {
         inventoryCanvas.enabled = true;
         selectedItemCanvas.enabled = true;
+        craftCanvas.enabled = true;
     }
 
     private void HideInventory()
     {
         inventoryCanvas.enabled = false;
         selectedItemCanvas.enabled = false;
+        craftCanvas.enabled = false;
         DropSelectedItem();
     }
 
@@ -147,6 +162,7 @@ public class Inventory : MonoBehaviour
                     return;
                 }
         
+        if (tmpCount == 0) return;
         Vector2 randomOffset = new(UnityEngine.Random.Range(-0.2f, 0.2f), UnityEngine.Random.Range(-0.2f, 0.2f));
         ItemInstantiater.InstantiateItem((Vector2)Camera.main.transform.position + randomOffset, itemID, tmpCount);
     }
@@ -249,6 +265,24 @@ public class Inventory : MonoBehaviour
     public int GetFootID()
     {
         return itemModels[capacity + 2] != null ? itemModels[capacity + 2].ItemID : -1;
+    }
+
+    public bool CanCraft(int craftID)
+    {
+        ItemAndCount[] requiredItems = itemDatabase.GetCraftRequiredItems(craftID);
+        foreach (var itemAndCount in requiredItems)
+            if (!CanRemoveItem(itemAndCount.ItemData.ID, itemAndCount.Count))
+                return false;
+        return true;
+    }
+
+    public void CraftItem(int craftID)
+    {
+        ItemAndCount[] requiredItems = itemDatabase.GetCraftRequiredItems(craftID);
+        foreach (var itemAndCount in requiredItems)
+            RemoveItem(itemAndCount.ItemData.ID, itemAndCount.Count);
+        ItemAndCount resultItem = itemDatabase.GetCraftResultItem(craftID);
+        AddItem(resultItem.ItemData.ID, resultItem.Count);
     }
 }
 
