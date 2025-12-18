@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: task1
   m_EditorClassIdentifier: Assembly-CSharp::TaskNode
   id: 1
-  taskType: 0
+  taskType: 
   neededCompletedParentTasks: 0
-  taskName: 
+  taskName: a
   description: 
   isHavingAlternativeChildren: 0
   alternativeChildTasks: []

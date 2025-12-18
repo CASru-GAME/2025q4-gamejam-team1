@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TaskTree
   nodes:
   - {fileID: 11400000, guid: faad70802fb382546ac77c4e03c95957, type: 2}
+  - {fileID: 11400000, guid: 67af9384ba0c1b24682960e777ce18d9, type: 2}
+  - {fileID: 11400000, guid: aa0d5d445ab70d548acdd89c9db58036, type: 2}

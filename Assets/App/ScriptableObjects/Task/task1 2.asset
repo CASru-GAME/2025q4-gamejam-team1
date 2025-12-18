@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7f53b4bc95d67140953a6072b5c2350, type: 3}
   m_Name: task1 2
   m_EditorClassIdentifier: Assembly-CSharp::TaskNode
-  id: 23
-  taskType: 0
+  id: 2
+  taskType: 
   neededCompletedParentTasks: 0
-  taskName: 
+  taskName: c
   description: 
   isHavingAlternativeChildren: 0
   alternativeChildTasks: []
