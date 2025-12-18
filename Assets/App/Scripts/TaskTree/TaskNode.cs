@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TaskNode", menuName = "Task/TaskNode")]
@@ -28,7 +29,7 @@ public class TaskNode : ScriptableObject
     public bool isDelivered;
     
     [System.Serializable] 
-    private struct Detail
+    public struct Detail
     {
         public int id;
         public int number;

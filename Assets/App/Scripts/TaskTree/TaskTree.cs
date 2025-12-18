@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using UnityEngine;
+
 [CreateAssetMenu(fileName = "TaskTree", menuName = "Task/TaskTree")]
 public class TaskTree : ScriptableObject
 {
