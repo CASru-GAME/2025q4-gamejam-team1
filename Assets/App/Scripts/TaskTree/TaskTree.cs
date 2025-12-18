@@ -21,7 +21,7 @@ public class TaskTree : ScriptableObject
         List<TaskNode> activeNodes = new List<TaskNode>();
         foreach (var node in nodes)
         {
-            if (node.isActive)
+            if (node.IsActive)
                 activeNodes.Add(node);
         }
         return activeNodes;
@@ -32,7 +32,7 @@ public class TaskTree : ScriptableObject
         List<TaskNode> completedNodes = new List<TaskNode>();
         foreach (var node in nodes)
         {
-            if (node.isCompleted)
+            if (node.IsCompleted)
                 completedNodes.Add(node);
         }
         return completedNodes;
