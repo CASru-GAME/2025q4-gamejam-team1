@@ -9,6 +9,8 @@ public class TaskNode : ScriptableObject
     [SerializeField] private NeededCompletedParentTasks neededCompletedParentTasks;
     [SerializeField] private string taskName;
     [SerializeField] private string description;
+    [SerializeField] private bool isHavingAlternativeChildren;
+    [SerializeField] private List<TaskNode> alternativeChildTasks;
     [SerializeField] private TaskNode[] childTasks;
     [SerializeField] private TaskNode[] parentTasks;
     [SerializeField] private List<Detail> requiredItems;
@@ -19,6 +21,8 @@ public class TaskNode : ScriptableObject
     public NeededCompletedParentTasks NeededCompletedParents => neededCompletedParentTasks;
     public string TaskName => taskName;
     public string Description => description;
+    public bool IsHavingAlternativeChildren => isHavingAlternativeChildren;
+    public List<TaskNode> AlternativeChildTasks => alternativeChildTasks;
     public TaskNode[] ChildTasks => childTasks;
     public TaskNode[] ParentTasks => parentTasks;
     public List<Detail> RequiredItems => requiredItems;
