@@ -28,3 +28,6 @@ MonoBehaviour:
   requiredItems: []
   targetEnemies: []
   rewardItems: []
+  isCompleted: 0
+  isActive: 0
+  isDelivered: 0
