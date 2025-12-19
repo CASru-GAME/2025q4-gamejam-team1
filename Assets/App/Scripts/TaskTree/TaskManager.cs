@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class TaskManager : MonoBehaviour
 {
+    public static TaskManager instance;
     [SerializeField] private TaskTree taskTree;
     public TaskTree TaskTree => taskTree;
     private List<TaskNode> activeTasks = new List<TaskNode>();
@@ -12,11 +13,18 @@ public class TaskManager : MonoBehaviour
 
     public void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
         ResetAllTasks();
     }
 
-    private void CompleteTask(TaskNode node, int killCount = 0, int collectCount = 0)
+    public void CompleteTask(int nodeId, int killCount = 0, int collectCount = 0)
     {
+        var node = taskTree.GetNodeById(nodeId);
         if (node.IsCompleted) return;
         node.Complete(killCount, collectCount);
         if (!completedTasks.Contains(node))
@@ -27,8 +35,9 @@ public class TaskManager : MonoBehaviour
         availableTasks = GetAvailableTasks();
     }
 
-    private void ActivateTask(TaskNode node)
+    public void ActivateTask(int nodeId)
     {
+        var node = taskTree.GetNodeById(nodeId);
         if (availableTasks.Contains(node) == false)
         {
             Debug.LogWarning($"タスク '{node.TaskName}' は現在利用できません。");
@@ -42,8 +51,9 @@ public class TaskManager : MonoBehaviour
         }
     }
 
-    private void DeliverTask(TaskNode node)
+    public void DeliverTask(int nodeId)
     {
+        var node = taskTree.GetNodeById(nodeId);
         if (node.IsDelivered) return;
         node.Deliver();
         if (!deliveredTasks.Contains(node))
