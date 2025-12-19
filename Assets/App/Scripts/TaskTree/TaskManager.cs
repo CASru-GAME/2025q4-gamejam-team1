@@ -15,10 +15,10 @@ public class TaskManager : MonoBehaviour
         ResetAllTasks();
     }
 
-    private void CompleteTask(TaskNode node)
+    private void CompleteTask(TaskNode node, int killCount = 0, int collectCount = 0)
     {
         if (node.IsCompleted) return;
-        node.Complete();
+        node.Complete(killCount, collectCount);
         if (!completedTasks.Contains(node))
         {
             completedTasks.Add(node);
@@ -56,6 +56,22 @@ public class TaskManager : MonoBehaviour
     {
         if (taskTree == null) return new List<TaskNode>();
         return taskTree.GetAvailableNodes(groupId, includeAlreadyActive);
+    }
+
+    public List<TaskNode> GetCompletableTasks(int killCount = 0, int collectCount = 0, int? groupId = null)
+    {
+        var list = new List<TaskNode>();
+        foreach (var node in activeTasks)
+        {
+            if (node.CheckCompletable(killCount, collectCount))
+            {
+                if (groupId == null || node.TaskGroupID == groupId)
+                {
+                    list.Add(node);
+                }
+            }
+        }
+        return list;
     }
 
     public void ActivateAllPossible(int? groupId = null)
