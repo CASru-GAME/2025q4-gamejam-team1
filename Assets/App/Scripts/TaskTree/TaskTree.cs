@@ -6,7 +6,7 @@ using System.Text;
 [CreateAssetMenu(fileName = "TaskTree", menuName = "Task/TaskTree")]
 public class TaskTree : ScriptableObject
 {
-    [SerializeField] private TaskNode[] nodes;
+    [SerializeField][Header("自動割当・削除のため書き込み禁止")] private TaskNode[] nodes;
 
     public TaskNode[] Nodes => nodes;
     public TaskNode GetNodeByID(int id)
@@ -362,52 +362,101 @@ public class TaskTree : ScriptableObject
 
     [ContextMenu("Validate TaskTree (Forest)")]
     private void ValidateFromContextMenu()
-{
-    var res = Validate(true);
-    var sb = new StringBuilder();
-    sb.AppendLine($"[TaskTree Validation] '{name}'");
-    sb.AppendLine($"- Nodes: {nodes?.Length ?? 0}");
-    sb.AppendLine($"- Groups: {res.GroupCount}");
-    sb.AppendLine($"- Trees: {res.TreeCount}");
-    sb.AppendLine($"- Valid: {res.IsValid}");
-    sb.AppendLine($"- Errors: {res.Errors.Count}");
-    foreach (var e in res.Errors) sb.AppendLine($"  • {e}");
-    sb.AppendLine($"- Warnings: {res.Warnings.Count}");
-    foreach (var w in res.Warnings) sb.AppendLine($"  • {w}");
-
-    // 各グループ・各成分のトポ順をアスキーアートで出力
-    foreach (var g in res.Groups.OrderBy(g => g.GroupID))
     {
-        sb.AppendLine($"[Group:{g.GroupID}] Trees: {g.TreeCount}, Nodes: {g.NodeCount}");
-        foreach (var order in g.ComponentTopologicalOrders)
+        var res = Validate(true);
+        var sb = new StringBuilder();
+        sb.AppendLine($"[TaskTree Validation] '{name}'");
+        sb.AppendLine($"- Nodes: {nodes?.Length ?? 0}");
+        sb.AppendLine($"- Groups: {res.GroupCount}");
+        sb.AppendLine($"- Trees: {res.TreeCount}");
+        sb.AppendLine($"- Valid: {res.IsValid}");
+        sb.AppendLine($"- Errors: {res.Errors.Count}");
+        foreach (var e in res.Errors) sb.AppendLine($"  • {e}");
+        sb.AppendLine($"- Warnings: {res.Warnings.Count}");
+        foreach (var w in res.Warnings) sb.AppendLine($"  • {w}");
+
+        // 各グループ・各成分のトポ順をアスキーアートで出力
+        foreach (var g in res.Groups)
         {
-            sb.AppendLine("  - ASCII Art Representation:");
-            foreach (var node in order)
+            sb.AppendLine($"[Group:{g.GroupID}]");
+            foreach (var order in g.ComponentTopologicalOrders)
             {
-                sb.AppendLine($"    {node.name}(ID:{node.ID})");
-                // 子ノードを表示
-                if (node.ChildTasks != null)
+                sb.AppendLine("  - ASCII Art Representation:");
+
+                // 深さ計算（従来どおり）
+                var depthMap = new Dictionary<TaskNode, int>();
+                foreach (var n in order) depthMap[n] = 0;
+                foreach (var node in order)
                 {
-                    foreach (var child in node.ChildTasks)
+                    int parentDepth = depthMap.TryGetValue(node, out var d) ? d : 0;
+
+                    var normalChildrenPrep = node.ChildTasks ?? System.Array.Empty<TaskNode>();
+                    IEnumerable<TaskNode> altChildrenPrep = (node.IsHavingAlternativeChildren && node.AlternativeChildTasks != null)
+                        ? node.AlternativeChildTasks
+                        : System.Array.Empty<TaskNode>();
+
+                    var dedupPrep = new HashSet<TaskNode>();
+                    foreach (var c in normalChildrenPrep) if (c != null) dedupPrep.Add(c);
+                    foreach (var c in altChildrenPrep) if (c != null) dedupPrep.Add(c);
+
+                    foreach (var c in dedupPrep)
                     {
-                        sb.AppendLine($"      └─ {child.name}(ID:{child.ID})");
+                        if (c == null) continue;
+                        var cur = depthMap.TryGetValue(c, out var dc) ? dc : 0;
+                        var nd = parentDepth + 1;
+                        if (nd > cur) depthMap[c] = nd;
                     }
                 }
-                // 代替子ノードを表示
-                if (node.IsHavingAlternativeChildren && node.AlternativeChildTasks != null)
+
+                string Indent(int depth, int extra = 0) => new string(' ', 4 + depth * 8 + extra);
+
+                foreach (var node in order)
                 {
-                    foreach (var altChild in node.AlternativeChildTasks)
+                    int depth = depthMap.TryGetValue(node, out var d) ? d : 0;
+                    sb.AppendLine($"{Indent(depth)}{node.name}(ID:{node.ID}) [Parents:{node.NeededCompletedParents}]");
+
+                    // この親にぶら下がる子をすべて枝表示（通常子 + 代替子）。同一親内でのみ重複排除。
+                    var normalChildren = node.ChildTasks ?? System.Array.Empty<TaskNode>();
+                    IEnumerable<TaskNode> altChildren = (node.IsHavingAlternativeChildren && node.AlternativeChildTasks != null)
+                        ? node.AlternativeChildTasks
+                        : System.Array.Empty<TaskNode>();
+
+                    var dedup = new List<(TaskNode child, bool isAlt)>();
+                    var index = new Dictionary<TaskNode, int>();
+
+                    void AddChild(TaskNode c, bool isAlt)
                     {
-                        sb.AppendLine($"      ├─ [Alt] {altChild.name}(ID:{altChild.ID})");
+                        if (c == null) return;
+                        if (index.TryGetValue(c, out var i))
+                        {
+                            if (isAlt && !dedup[i].isAlt)
+                                dedup[i] = (c, true);
+                        }
+                        else
+                        {
+                            index[c] = dedup.Count;
+                            dedup.Add((c, isAlt));
+                        }
+                    }
+
+                    foreach (var c in normalChildren) AddChild(c, false);
+                    foreach (var c in altChildren) AddChild(c, true);
+
+                    for (int i = 0; i < dedup.Count; i++)
+                    {
+                        var (child, isAlt) = dedup[i];
+                        if (child == null) continue;
+                        var branch = (i == dedup.Count - 1) ? "└─" : "├─";
+                        var altTag = isAlt ? "[Alt] " : "";
+                        sb.AppendLine($"{Indent(depth, 2)}{branch} {altTag}{child.name}(ID:{child.ID})");
                     }
                 }
             }
         }
-    }
 
-    if (res.IsValid)
-        Debug.Log(sb.ToString(), this);
-    else
-        Debug.LogError(sb.ToString(), this);
-}
+        if (res.IsValid)
+            Debug.Log(sb.ToString(), this);
+        else
+            Debug.LogError(sb.ToString(), this);
+    }
 }

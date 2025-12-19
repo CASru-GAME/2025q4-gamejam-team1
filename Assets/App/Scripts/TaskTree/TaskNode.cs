@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "TaskNode", menuName = "Task/TaskNode")]
 public class TaskNode : ScriptableObject
 {
-    [SerializeField][Header("自動割り当てのため書き込み禁止")][Tooltip("タスクの一意識別子")] private int id;
+    [SerializeField][Header("自動割当のため書き込み禁止")][Tooltip("タスクの一意識別子")] private int id;
     [SerializeField][Header("以降書き込み可")][Tooltip("タスクの種類")] private TaskType[] taskType;
     [SerializeField][Tooltip("タスクグループID")] private int taskGroupID;
     [SerializeField][Tooltip("必要な親タスクの完了条件")] private NeededCompletedParentTasks neededCompletedParentTasks;
