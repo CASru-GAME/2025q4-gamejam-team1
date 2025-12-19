@@ -91,7 +91,7 @@ public class PlayerStatistics : MonoBehaviour
     }
 
     [System.Serializable]
-    public struct CountById
+    public class CountById
     {
         public int id;
         public int count;

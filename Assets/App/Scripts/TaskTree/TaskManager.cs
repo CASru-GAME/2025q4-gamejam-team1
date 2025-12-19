@@ -26,7 +26,7 @@ public class TaskManager : MonoBehaviour
     {
         var node = taskTree.GetNodeById(nodeId);
         if (node.IsCompleted) return;
-        node.Complete(killCount, collectCount);
+        node.Complete();
         if (!completedTasks.Contains(node))
         {
             completedTasks.Add(node);
@@ -73,7 +73,7 @@ public class TaskManager : MonoBehaviour
         var list = new List<TaskNode>();
         foreach (var node in activeTasks)
         {
-            if (node.CheckCompletable(killCount, collectCount))
+            if (node.CheckCompletable())
             {
                 if (groupId == null || node.TaskGroupID == groupId)
                 {
