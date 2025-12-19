@@ -90,6 +90,14 @@ public class PlayerStatistics : MonoBehaviour
         return 0;
     }
 
+    public void Oestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
+    }
+
     [System.Serializable]
     public class CountById
     {

@@ -10,7 +10,6 @@ public class TaskManager : MonoBehaviour
     private List<TaskNode> completedTasks = new List<TaskNode>();
     private List<TaskNode> deliveredTasks = new List<TaskNode>();
     private List<TaskNode> availableTasks = new List<TaskNode>();
-
     public void Awake()
     {
         if (instance != null && instance != this)
@@ -101,5 +100,50 @@ public class TaskManager : MonoBehaviour
         completedTasks.Clear();
         deliveredTasks.Clear();
         availableTasks = GetAvailableTasks();
+    }
+
+    private void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
+    }
+
+    private class CountMemory
+    {
+        private Dictionary<int, List<Dictionary<int, int>>> memory = new Dictionary<int, List<Dictionary<int, int>>>();
+        private Dictionary<int, List<Dictionary<int, int>>> countAfterActivate = new Dictionary<int, List<Dictionary<int, int>>>();
+
+        public int GetCountByNodeIdAndItemId(int nodeId, int itemId)
+        {
+            int count = 0;
+            if (memory.ContainsKey(nodeId))
+            {
+                foreach (var dict in memory[nodeId])
+                {
+                    if (dict.ContainsKey(itemId))
+                    {
+                        return count += dict[itemId];
+                    }
+                }
+            }
+            return count;
+        }
+
+        public void CulculateCountByNodeIdAndItemId(int nodeId)
+        {
+            if (!memory.ContainsKey(nodeId))
+            {
+                memory[nodeId] = new List<Dictionary<int, int>>();
+            }
+            var temp = new Dictionary<int, int>();
+            foreach (var item in PlayerStatistics.instance.GetCollectedItemsDictionary())
+            {
+                temp[item.Key] = item.Value;
+            }
+
+            memory[nodeId].Add(temp);
+        }
     }
 }
