@@ -6,7 +6,7 @@ using System.Text;
 [CreateAssetMenu(fileName = "TaskTree", menuName = "Task/TaskTree")]
 public class TaskTree : ScriptableObject
 {
-    [SerializeField][Header("自動割当・削除のため書き込み禁止")] private TaskNode[] nodes;
+    [SerializeField][Header("自動割当・削除のため書込み禁止")] private TaskNode[] nodes;
 
     public TaskNode[] Nodes => nodes;
     public TaskNode GetNodeByID(int id)
