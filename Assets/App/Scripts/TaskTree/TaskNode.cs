@@ -27,9 +27,9 @@ public class TaskNode : ScriptableObject
     public List<TaskNode> AlternativeChildTasks => alternativeChildTasks;
     public TaskNode[] ChildTasks => childTasks;
     public TaskNode[] ParentTasks => parentTasks;
-    public List<Detail> RequiredItems => requiredItems;
-    public List<Detail> TargetEnemies => targetEnemies;
-    public List<Detail> RewardItems => rewardItems;
+    public List<CountById> RequiredItems => requiredItems;
+    public List<CountById> TargetEnemies => targetEnemies;
+    public List<CountById> RewardItems => rewardItems;
     [Header("状態管理・デバッグ用")]
     [SerializeField] private bool isCompleted = false;
     [SerializeField] private bool isActive = false;
@@ -62,7 +62,13 @@ public class TaskNode : ScriptableObject
         isDelivered = false;
     }
 
-    public bool CheckCompletable(int killCount = 0, int collectCount = 0)
+    /// <summary>
+    /// タスクが完了可能かどうかをチェックします。引数の辞書型配列のキーはアイテムIDまたは敵ID、値はその数を表します。
+    /// </summary>
+    /// <param name="killCounts"></param>
+    /// <param name="collectCounts"></param>
+    /// <returns></returns>
+    public bool CheckCompletable(Dictionary<int, int> killCounts = null, Dictionary<int, int> collectCounts = null)
     {
         if (!isActive)
         {
@@ -77,7 +83,7 @@ public class TaskNode : ScriptableObject
                 {
                     foreach (var item in requiredItems)
                     {
-                        if ((collectCount < item.count) && (item.count > 0))
+                        if ((collectCounts[item.id] < item.count) && (item.count > 0))
                         {
                             Debug.LogWarning($"タスク '{taskName}' の収集アイテムが不足しています。必要数: {item.count}, 現在の数: {collectCount}");
                             return false;
@@ -88,7 +94,7 @@ public class TaskNode : ScriptableObject
                 {
                     foreach (var enemy in targetEnemies)
                     {
-                        if ((killCount < enemy.count) && (enemy.count > 0))
+                        if ((killCounts[enemy.id] < enemy.count) && (enemy.count > 0))
                         {
                             Debug.LogWarning($"タスク '{taskName}' の対象敵の討伐数が不足しています。必要数: {enemy.count}, 現在の数: {killCount}");
                             return false;
@@ -169,7 +175,7 @@ public class TaskNode : ScriptableObject
 #endif
 
     [System.Serializable]
-    public struct Detail
+    public struct CountById
     {
         public int id;
         public int count;
