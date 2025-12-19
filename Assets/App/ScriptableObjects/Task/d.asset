@@ -10,17 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7f53b4bc95d67140953a6072b5c2350, type: 3}
-  m_Name: task1 2
+  m_Name: d
   m_EditorClassIdentifier: Assembly-CSharp::TaskNode
-  id: 2
+  id: 1
   taskType: 
-  neededCompletedParentTasks: 0
-  taskName: c
+  taskGroupID: 1
+  neededCompletedParentTasks: 1
+  taskName: a
   description: 
   isHavingAlternativeChildren: 0
   alternativeChildTasks: []
   childTasks: []
-  parentTasks: []
+  parentTasks:
+  - {fileID: 11400000, guid: faad70802fb382546ac77c4e03c95957, type: 2}
   requiredItems: []
   targetEnemies: []
   rewardItems: []

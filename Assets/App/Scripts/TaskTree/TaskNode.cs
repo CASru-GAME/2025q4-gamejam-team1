@@ -6,6 +6,7 @@ public class TaskNode : ScriptableObject
 {
     [SerializeField][Header("自動割り当てのため書き込み禁止")][Tooltip("タスクの一意識別子")] private int id;
     [SerializeField][Header("以降書き込み可")][Tooltip("タスクの種類")] private TaskType[] taskType;
+    [SerializeField][Tooltip("タスクグループID")] private int taskGroupID;
     [SerializeField][Tooltip("必要な親タスクの完了条件")] private NeededCompletedParentTasks neededCompletedParentTasks;
     [SerializeField][Tooltip("タスク名")] private string taskName;
     [SerializeField][TextArea(3, 10)][Tooltip("タスクの説明")] private string description;
@@ -18,6 +19,7 @@ public class TaskNode : ScriptableObject
     [SerializeField][Tooltip("報酬アイテムのリスト")] private List<Detail> rewardItems;
     public int ID => id;
     public TaskType[] TType => taskType;
+    public int TaskGroupID => taskGroupID;
     public NeededCompletedParentTasks NeededCompletedParents => neededCompletedParentTasks;
     public string TaskName => taskName;
     public string Description => description;
@@ -43,6 +45,12 @@ public class TaskNode : ScriptableObject
         if (id == 0 || IsDuplicateID())
         {
             id = GenerateUniqueID();
+        }
+
+        // タスク名を基にScriptableObjectの名前を変更
+        if (!string.IsNullOrEmpty(taskName))
+        {
+            name = taskName; // ScriptableObjectの名前をタスク名に設定
         }
     }
 
