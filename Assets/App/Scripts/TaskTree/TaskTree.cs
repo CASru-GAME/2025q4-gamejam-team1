@@ -459,4 +459,96 @@ public class TaskTree : ScriptableObject
         else
             Debug.LogError(sb.ToString(), this);
     }
+
+    [ContextMenu("Get Available TaskNodes")]
+    public void DebugAvailableNodes()
+    {
+        var available = GetAvailableNodes();
+        var names = available.Select(n => $"{n.name}(ID:{n.ID})");
+        Debug.Log($"Available TaskNodes in '{name}': {string.Join(", ", names)}", this);
+    }
+
+    /// <summary>
+    /// 今の状態で Activate 可能な TaskNode を返します。
+    /// 条件:
+    /// - IsActive == false
+    /// - IsCompleted == false
+    /// - 親タスク条件（NeededCompletedParentTasks）を満たす
+    /// 任意で groupId によるフィルタ、Activeを含めるかを指定できます。
+    /// </summary>
+    public List<TaskNode> GetAvailableNodes(int? groupId = null, bool includeAlreadyActive = false)
+    {
+        var result = new List<TaskNode>();
+        if (nodes == null || nodes.Length == 0) return result;
+
+        // Altグループのブロック対象（Altグループ内に Active/Completed がいる場合、他の子は除外）
+        var blockedAltNodes = new HashSet<TaskNode>();
+        foreach (var parent in nodes)
+        {
+            if (parent == null) continue;
+            if (!parent.IsHavingAlternativeChildren) continue;
+
+            var altChildren = parent.AlternativeChildTasks;
+            if (altChildren == null || altChildren.Count == 0) continue;
+
+            // グループが「選択済み」か（Active または Completed が1つでもある）
+            bool groupTaken = altChildren.Any(c => c != null && (c.IsActive || c.IsCompleted));
+            if (!groupTaken) continue;
+
+            foreach (var child in altChildren)
+            {
+                if (child == null) continue;
+                // 既に選択された子（Active or Completed）は対象外、未選択の子のみブロック
+                if (!child.IsActive && !child.IsCompleted)
+                    blockedAltNodes.Add(child);
+            }
+        }
+
+        foreach (var n in nodes)
+        {
+            if (n == null) continue;
+            if (groupId.HasValue && n.TaskGroupID != groupId.Value) continue;
+
+            // Alt条件: グループが選択済みなら、そのグループの未選択（非Activeかつ未Completed）ノードは除外
+            if (blockedAltNodes.Contains(n)) continue;
+
+            if (!includeAlreadyActive && n.IsActive) continue;
+            if (n.IsCompleted) continue;
+
+            if (AreParentsSatisfied(n))
+                result.Add(n);
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 親タスク条件が満たされているか判定。
+    /// None: 親が0であること
+    /// Any: 親のいずれかが Completed
+    /// All: 親がすべて Completed
+    /// </summary>
+    private bool AreParentsSatisfied(TaskNode node)
+    {
+        var parents = node.ParentTasks ?? System.Array.Empty<TaskNode>();
+        switch (node.NeededCompletedParents)
+        {
+            case TaskNode.NeededCompletedParentTasks.None:
+                return parents.Length == 0;
+
+            case TaskNode.NeededCompletedParentTasks.Any:
+                foreach (var p in parents)
+                    if (p != null && p.IsCompleted) return true;
+                return false;
+
+            case TaskNode.NeededCompletedParentTasks.All:
+                foreach (var p in parents)
+                {
+                    if (p == null || !p.IsCompleted) return false;
+                }
+                return true;
+
+            default:
+                return false;
+        }
+    }
 }

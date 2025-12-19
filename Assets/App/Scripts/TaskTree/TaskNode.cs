@@ -30,13 +30,83 @@ public class TaskNode : ScriptableObject
     public List<Detail> RequiredItems => requiredItems;
     public List<Detail> TargetEnemies => targetEnemies;
     public List<Detail> RewardItems => rewardItems;
-
-    private bool isCompleted;
-    private bool isActive;
-    private bool isDelivered;
+    [Header("状態管理・デバッグ用")]
+    [SerializeField] private bool isCompleted = false;
+    [SerializeField] private bool isActive = false;
+    [SerializeField] private bool isDelivered = false;
     public bool IsCompleted => isCompleted;
     public bool IsActive => isActive;
     public bool IsDelivered => isDelivered;
+
+    public void Complete(int killCount = 0, int collectCount = 0)
+    {
+        if (!CheckCompletable(killCount, collectCount))
+        {
+            Debug.LogWarning($"タスク '{taskName}' を完了できません。");
+            return;
+        }
+        isCompleted = true;
+    }
+    public void Activate()
+    {
+        isActive = true;
+    }
+    public void Deliver()
+    {
+        isDelivered = true;
+    }
+    public void ResetStatus()
+    {
+        isActive = false;
+        isCompleted = false;
+        isDelivered = false;
+    }
+
+    public bool CheckCompletable(int killCount = 0, int collectCount = 0)
+    {
+        if (!isActive)
+        {
+            Debug.LogWarning($"タスク '{taskName}' はアクティブではないため、完了できません。");
+            return false;
+        }
+        if (taskType != null)
+        {
+            foreach (var t in taskType)
+            {
+                if (t == TaskType.Collect)
+                {
+                    foreach (var item in requiredItems)
+                    {
+                        if ((collectCount < item.count) && (item.count > 0))
+                        {
+                            Debug.LogWarning($"タスク '{taskName}' の収集アイテムが不足しています。必要数: {item.count}, 現在の数: {collectCount}");
+                            return false;
+                        }
+                    }
+                }
+                else if (t == TaskType.Hunt)
+                {
+                    foreach (var enemy in targetEnemies)
+                    {
+                        if ((killCount < enemy.count) && (enemy.count > 0))
+                        {
+                            Debug.LogWarning($"タスク '{taskName}' の対象敵の討伐数が不足しています。必要数: {enemy.count}, 現在の数: {killCount}");
+                            return false;
+                        }
+                    }
+                }
+                else if (t == TaskType.Deliver)
+                {
+                    if (!isDelivered)
+                    {
+                        Debug.LogWarning($"タスク '{taskName}' はまだ配達されていません。");
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
 #if UNITY_EDITOR
     private void OnValidate()
