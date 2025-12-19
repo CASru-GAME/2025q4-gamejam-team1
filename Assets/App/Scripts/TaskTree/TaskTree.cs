@@ -362,36 +362,52 @@ public class TaskTree : ScriptableObject
 
     [ContextMenu("Validate TaskTree (Forest)")]
     private void ValidateFromContextMenu()
-    {
-        var res = Validate(true);
-        var sb = new StringBuilder();
-        sb.AppendLine($"[TaskTree Validation] '{name}'");
-        sb.AppendLine($"- Nodes: {nodes?.Length ?? 0}");
-        sb.AppendLine($"- Groups: {res.GroupCount}");
-        sb.AppendLine($"- Trees: {res.TreeCount}");
-        sb.AppendLine($"- Valid: {res.IsValid}");
-        sb.AppendLine($"- Errors: {res.Errors.Count}");
-        foreach (var e in res.Errors) sb.AppendLine($"  • {e}");
-        sb.AppendLine($"- Warnings: {res.Warnings.Count}");
-        foreach (var w in res.Warnings) sb.AppendLine($"  • {w}");
+{
+    var res = Validate(true);
+    var sb = new StringBuilder();
+    sb.AppendLine($"[TaskTree Validation] '{name}'");
+    sb.AppendLine($"- Nodes: {nodes?.Length ?? 0}");
+    sb.AppendLine($"- Groups: {res.GroupCount}");
+    sb.AppendLine($"- Trees: {res.TreeCount}");
+    sb.AppendLine($"- Valid: {res.IsValid}");
+    sb.AppendLine($"- Errors: {res.Errors.Count}");
+    foreach (var e in res.Errors) sb.AppendLine($"  • {e}");
+    sb.AppendLine($"- Warnings: {res.Warnings.Count}");
+    foreach (var w in res.Warnings) sb.AppendLine($"  • {w}");
 
-        // 各グループ・各成分のトポ順を出力
-        foreach (var g in res.Groups.OrderBy(g => g.GroupID))
+    // 各グループ・各成分のトポ順をアスキーアートで出力
+    foreach (var g in res.Groups.OrderBy(g => g.GroupID))
+    {
+        sb.AppendLine($"[Group:{g.GroupID}] Trees: {g.TreeCount}, Nodes: {g.NodeCount}");
+        foreach (var order in g.ComponentTopologicalOrders)
         {
-            sb.AppendLine($"[Group:{g.GroupID}] Trees: {g.TreeCount}, Nodes: {g.NodeCount}");
-            for (int i = 0; i < g.ComponentTopologicalOrders.Count; i++)
+            sb.AppendLine("  - ASCII Art Representation:");
+            foreach (var node in order)
             {
-                var order = g.ComponentTopologicalOrders[i];
-                var line = order != null && order.Count > 0
-                    ? string.Join(" -> ", order.Select(n => $"{n.name}(ID:{n.ID})"))
-                    : "(empty)";
-                sb.AppendLine($"  - Topological Order [#{i + 1}]: {line}");
+                sb.AppendLine($"    {node.name}(ID:{node.ID})");
+                // 子ノードを表示
+                if (node.ChildTasks != null)
+                {
+                    foreach (var child in node.ChildTasks)
+                    {
+                        sb.AppendLine($"      └─ {child.name}(ID:{child.ID})");
+                    }
+                }
+                // 代替子ノードを表示
+                if (node.IsHavingAlternativeChildren && node.AlternativeChildTasks != null)
+                {
+                    foreach (var altChild in node.AlternativeChildTasks)
+                    {
+                        sb.AppendLine($"      ├─ [Alt] {altChild.name}(ID:{altChild.ID})");
+                    }
+                }
             }
         }
-
-        if (res.IsValid)
-            Debug.Log(sb.ToString(), this);
-        else
-            Debug.LogError(sb.ToString(), this);
     }
+
+    if (res.IsValid)
+        Debug.Log(sb.ToString(), this);
+    else
+        Debug.LogError(sb.ToString(), this);
+}
 }
