@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "name": "PlayerActions",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "8821ea70-7e80-4fa6-ae69-3ba153dfbdd4",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Button",
+                    "id": "9d4a3366-1bf1-45bf-857d-388484f4a834",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "a575f006-c71e-4e9f-861a-beeaaec0769a",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
