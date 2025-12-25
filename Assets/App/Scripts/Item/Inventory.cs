@@ -137,11 +137,13 @@ public class Inventory : MonoBehaviour
                     int diff = itemDatabase.GetMaxStack(itemID) - itemModels[i].Count;
                     tmpCount -= diff;
                     itemModels[i] = itemModels[i].AddCount(diff);
+                    PlayerStatistics.instance.CollectItem(itemID, diff);
                     itemInInventory[i].UpdateCount(itemModels[i].Count);
                 }
                 else
                 {
                     itemModels[i] = itemModels[i].AddCount(tmpCount);
+                    PlayerStatistics.instance.CollectItem(itemID, tmpCount);
                     itemInInventory[i].UpdateCount(itemModels[i].Count);
                     tmpCount = 0;
                 }
@@ -153,11 +155,13 @@ public class Inventory : MonoBehaviour
                     int diff = itemDatabase.GetMaxStack(itemID);
                     tmpCount -= diff;
                     itemModels[i] = ItemModel.AddNew(itemID, diff);
+                    PlayerStatistics.instance.CollectItem(itemID, diff);
                     itemInInventory[i].AddNew(itemID, diff, i);
                 }
                 else
                 {
                     itemModels[i] = ItemModel.AddNew(itemID, tmpCount);
+                    PlayerStatistics.instance.CollectItem(itemID, tmpCount);
                     itemInInventory[i].AddNew(itemID, tmpCount, i);
                     return;
                 }
