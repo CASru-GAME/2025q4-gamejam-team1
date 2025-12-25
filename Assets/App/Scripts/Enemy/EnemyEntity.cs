@@ -20,26 +20,26 @@ public class EnemyEntity : MonoBehaviour
         // 脳（EnemyController2）を生成
         controller2 = new EnemyController2(this.transform, maxHP);
     }
-    
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    
+
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
         //EnemyController1 の毎フレーム処理を呼び出す
-        controller.OnUpdate();  
+        controller.OnUpdate();
 
         controller2.OnUpdate();
 
         // 脳の現在のHPを、インスペクターで見える変数に毎フレームコピーする
         debugHp = controller2.CurrentHP;
     }
-    
+
     // プレイヤーが範囲（Trigger）に入った瞬間に呼ばれる
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -47,6 +47,12 @@ public class EnemyEntity : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             controller.SetTarget(other.gameObject);
+        }
+        // もしぶつかった相手のタグが「PlayerAttack」なら
+        if (other.CompareTag("PlayerAttack"))
+        {
+            // EnemyController2にダメージを伝える
+            controller2.TakeDamage(1);
         }
     }
 
@@ -57,17 +63,6 @@ public class EnemyEntity : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             controller.ClearTarget();
-        }
-    }
-
-    // 何かがぶつかった時の判定
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        // もしぶつかった相手のタグが「PlayerAttack」なら
-        if (other.CompareTag("PlayerAttack"))
-        {
-            // EnemyController2にダメージを伝える
-            controller2.TakeDamage(1);
         }
     }
 }
