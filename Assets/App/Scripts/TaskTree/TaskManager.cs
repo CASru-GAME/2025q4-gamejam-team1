@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
+using NUnit.Framework;
 
 public class TaskManager : MonoBehaviour
 {
@@ -61,12 +63,32 @@ public class TaskManager : MonoBehaviour
     public void DeliverTask(int nodeId)
     {
         var node = taskTree.GetNodeById(nodeId);
-        if (node.IsDelivered) return;
+        if (IsDeliverableTask(nodeId) == false) return;
         node.Deliver();
+        foreach (var item in node.RequiredItems)
+        {
+            Inventory.Instance.RemoveItem(item.id, item.count);
+        }
         if (!deliveredTasks.Contains(node))
         {
             deliveredTasks.Add(node);
         }
+    }
+    public bool IsDeliverableTask(int nodeID)
+    {
+        var node = taskTree.GetNodeById(nodeID);
+        if (node.TType == null || !Array.Exists(node.TType, t => t == TaskNode.TaskType.Deliver))
+        {
+            return false;
+        }
+        foreach (var item in node.RequiredItems)
+        {
+            if (Inventory.Instance.CanRemoveItem(item.id, item.count) == false)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     public List<TaskNode> GetAvailableTasks(int? groupId = null, bool includeAlreadyActive = false)
