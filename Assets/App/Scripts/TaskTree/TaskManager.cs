@@ -10,6 +10,7 @@ public class TaskManager : MonoBehaviour
     private List<TaskNode> completedTasks = new List<TaskNode>();
     private List<TaskNode> deliveredTasks = new List<TaskNode>();
     private List<TaskNode> availableTasks = new List<TaskNode>();
+    private List<ActivatedTaskProgressInfo> activatedTaskProgressInfos = new List<ActivatedTaskProgressInfo>();
     public void Awake()
     {
         if (instance != null && instance != this)
@@ -25,12 +26,18 @@ public class TaskManager : MonoBehaviour
     {
         var node = taskTree.GetNodeById(nodeId);
         if (node.IsCompleted) return;
+        if (!IsCompletableTask(node, activatedTaskProgressInfos.Find(info => info.nodeId == nodeId)))
+        {
+            Debug.LogWarning($"タスク '{node.TaskName}' を完了できません。");
+            return;
+        }
         node.Complete();
         if (!completedTasks.Contains(node))
         {
             completedTasks.Add(node);
         }
         activeTasks.Remove(node);
+        activatedTaskProgressInfos.RemoveAll(info => info.nodeId == nodeId);
         availableTasks = GetAvailableTasks();
     }
 
@@ -47,6 +54,7 @@ public class TaskManager : MonoBehaviour
         if (!activeTasks.Contains(node))
         {
             activeTasks.Add(node);
+            activatedTaskProgressInfos.Add(new ActivatedTaskProgressInfo(nodeId));
         }
     }
 
@@ -90,6 +98,46 @@ public class TaskManager : MonoBehaviour
             node.Activate();
     }
 
+    private bool IsCompletableTask(TaskNode node, ActivatedTaskProgressInfo progressInfo)
+    {
+        if (node.TType != null)
+        {
+            foreach (var t in node.TType)
+            {
+                if (t == TaskNode.TaskType.Collect)
+                {
+                    foreach (var item in node.RequiredItems)
+                    {
+                        var collectedItem = progressInfo.collectedItems.Find(i => i.id == item.id);
+                        if (collectedItem == null || collectedItem.count < item.count)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else if (t == TaskNode.TaskType.Hunt)
+                {
+                    foreach (var enemy in node.TargetEnemies)
+                    {
+                        var defeatedEnemy = progressInfo.defeatedEnemies.Find(e => e.id == enemy.id);
+                        if (defeatedEnemy == null || defeatedEnemy.count < enemy.count)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else if (t == TaskNode.TaskType.Deliver)
+                {
+                    if (!node.IsDelivered)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     private void ResetAllTasks()
     {
         foreach (var node in taskTree.Nodes)
@@ -110,40 +158,59 @@ public class TaskManager : MonoBehaviour
         }
     }
 
-    private class CountMemory
+    private class ActivatedTaskProgressInfo
     {
-        private Dictionary<int, List<Dictionary<int, int>>> memory = new Dictionary<int, List<Dictionary<int, int>>>();
-        private Dictionary<int, List<Dictionary<int, int>>> countAfterActivate = new Dictionary<int, List<Dictionary<int, int>>>();
-
-        public int GetCountByNodeIdAndItemId(int nodeId, int itemId)
+        public int nodeId;
+        public List<CountInfo> collectedItems = new List<CountInfo>();
+        public List<CountInfo> defeatedEnemies = new List<CountInfo>();
+        private void UpdateCollectedItem(int itemId, int count)
         {
-            int count = 0;
-            if (memory.ContainsKey(nodeId))
+            foreach (var item in collectedItems)
             {
-                foreach (var dict in memory[nodeId])
+                if (item.id == itemId)
                 {
-                    if (dict.ContainsKey(itemId))
-                    {
-                        return count += dict[itemId];
-                    }
+                    item.count += count;
+                    return;
                 }
             }
-            return count;
         }
 
-        public void CulculateCountByNodeIdAndItemId(int nodeId)
+        private void UpdateDefeatedEnemy(int enemyId, int count)
         {
-            if (!memory.ContainsKey(nodeId))
+            foreach (var enemy in defeatedEnemies)
             {
-                memory[nodeId] = new List<Dictionary<int, int>>();
+                if (enemy.id == enemyId)
+                {
+                    enemy.count += count;
+                    return;
+                }
             }
-            var temp = new Dictionary<int, int>();
-            foreach (var item in PlayerStatistics.instance.GetCollectedItemsDictionary())
-            {
-                temp[item.Key] = item.Value;
-            }
+        }
 
-            memory[nodeId].Add(temp);
+        private void InitializeCounts()
+        {
+            foreach (var requiredItem in instance.TaskTree.GetNodeById(nodeId).RequiredItems)
+            {
+                collectedItems.Add(new CountInfo { id = requiredItem.id, count = 0 });
+            }
+            foreach (var targetEnemy in instance.TaskTree.GetNodeById(nodeId).TargetEnemies)
+            {
+                defeatedEnemies.Add(new CountInfo { id = targetEnemy.id, count = 0 });
+            }
+        }
+        public ActivatedTaskProgressInfo(int nodeId)
+        {
+            this.nodeId = nodeId;
+            InitializeCounts();
+            PlayerStatistics.instance.SubscribeToItemCollected(UpdateCollectedItem);
+            PlayerStatistics.instance.SubscribeToEnemyDefeated(UpdateDefeatedEnemy);
         }
     }
+
+    private class CountInfo
+    {
+        public int id;
+        public int count;
+    }
 }
+

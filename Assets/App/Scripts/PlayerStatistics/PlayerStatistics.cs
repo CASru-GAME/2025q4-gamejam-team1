@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class PlayerStatistics : MonoBehaviour
 {
@@ -18,6 +19,25 @@ public class PlayerStatistics : MonoBehaviour
     [Header("書込み禁止")]
     [SerializeField] private List<CountById> colletedItems;
     [SerializeField] private List<CountById> defeatedEnemies;
+    private event Action<int, int> onItemCollected;
+    private event Action<int, int> onEnemyDefeated;
+
+    public void SubscribeToItemCollected(Action<int, int> callback)
+    {
+        onItemCollected += callback;
+    }
+    public void UnsubscribeFromItemCollected(Action<int, int> callback)
+    {
+        onItemCollected -= callback;
+    }
+    public void SubscribeToEnemyDefeated(Action<int, int> callback)
+    {
+        onEnemyDefeated += callback;
+    }
+    public void UnsubscribeFromEnemyDefeated(Action<int, int> callback)
+    {
+        onEnemyDefeated -= callback;
+    }
     public void CollectItem(int itemID, int count)
     {
         for (int i = 0; i < colletedItems.Count; i++)
@@ -30,6 +50,7 @@ public class PlayerStatistics : MonoBehaviour
         }
         // アイテムが見つからなかった場合、新しいエントリを追加
         colletedItems.Add(new CountById { id = itemID, count = count });
+        onItemCollected?.Invoke(itemID, count);
     }
 
     public void DefeatEnemy(int enemyID, int count)
@@ -44,6 +65,7 @@ public class PlayerStatistics : MonoBehaviour
         }
         // 敵が見つからなかった場合、新しいエントリを追加
         defeatedEnemies.Add(new CountById { id = enemyID, count = count });
+        onEnemyDefeated?.Invoke(enemyID, count);
     }
 
     public Dictionary<int, int> GetCollectedItemsDictionary()
