@@ -34,18 +34,16 @@ public class EnemyEntity : MonoBehaviour
         // EnemyController2を生成、同時に中でEnemyHPも生成される。加えてアイテムドロップ情報も渡す
         controller2 = new EnemyController2(this.transform, maxHP, dropItemID, dropItemCount);
     }
-    
-    
     // Update is called once per frame
     void Update()
     {
         //EnemyController1 の毎フレーム処理を呼び出す
-        controller.OnUpdate();  
+        controller.OnUpdate();
 
         // 現在のHPを、インスペクターで見える変数に毎フレームコピーする
         debugHp = controller2.CurrentHP;
     }
-    
+
     // プレイヤーが範囲（Trigger）に入った瞬間に呼ばれる
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -54,7 +52,6 @@ public class EnemyEntity : MonoBehaviour
         {
             controller.SetTarget(other.gameObject);
         }
-        
         // もしぶつかった相手のタグが「PlayerAttack」なら
         if (other.CompareTag("PlayerAttack"))
         {

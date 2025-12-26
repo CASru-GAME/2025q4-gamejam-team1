@@ -23,6 +23,12 @@ public class EnemyController2
         this.itemCount = itemCount;
     }
 
+    // 毎フレームの処理（外部のUpdateから呼んでもらう）
+    public void OnUpdate()
+    {
+        // 今のところ毎フレームやることはない
+    }
+
     // ダメージを受ける処理
     public void TakeDamage(int damage)
     {
