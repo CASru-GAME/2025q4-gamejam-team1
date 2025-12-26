@@ -13,47 +13,111 @@ MonoBehaviour:
   m_Name: ItemDatabase
   m_EditorClassIdentifier: Assembly-CSharp::ItemDatabase
   itemDatas:
-  - {fileID: 11400000, guid: c9815b39607f7ee4594ab983138bf4f5, type: 2}
-  - {fileID: 11400000, guid: 851de120302f32444bf9a7a872d91444, type: 2}
+  - {fileID: 11400000, guid: 163921941765da74cb439b243c81a7e2, type: 2}
   - {fileID: 11400000, guid: bc04ff1f3b798b547a1c21d3b60ff71c, type: 2}
-  - {fileID: 11400000, guid: 41be089f78b97524c9f1c44a3a282b22, type: 2}
+  - {fileID: 11400000, guid: 83705dc126efb174c9c8c5caf455e1fc, type: 2}
+  - {fileID: 11400000, guid: 571db08dcac25404a96bf2ab191e48ef, type: 2}
+  - {fileID: 11400000, guid: 278590b0e3037c44e858bb5df4a8ceae, type: 2}
+  - {fileID: 11400000, guid: 285e1785f007a9241be48f4d03eb9242, type: 2}
+  - {fileID: 11400000, guid: 549fb30c725839640a4b378bce800e91, type: 2}
   - {fileID: 11400000, guid: bec21fbe7ae801c4da544a212e5015c9, type: 2}
+  - {fileID: 11400000, guid: 8d31478abd7eca446a48fb8bb73de8ff, type: 2}
   - {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
+  - {fileID: 11400000, guid: 08af6609f3597184eba0f9f71f7314bb, type: 2}
+  - {fileID: 11400000, guid: 65f68ca3600211c43a17ad5db2c1a9a4, type: 2}
+  - {fileID: 11400000, guid: ee8d03a7fe33bab43b7ebca7398ce0c8, type: 2}
+  - {fileID: 11400000, guid: 7cb4c726ab540bb40bf02be3bf994c91, type: 2}
+  - {fileID: 11400000, guid: c9815b39607f7ee4594ab983138bf4f5, type: 2}
+  - {fileID: 11400000, guid: 8086227c5d2376e408b1d9b298dbc706, type: 2}
+  - {fileID: 11400000, guid: 88b3f3c142da7114cb4a6653e7ee20b1, type: 2}
+  - {fileID: 11400000, guid: 851de120302f32444bf9a7a872d91444, type: 2}
   craftDatas:
   - craftID: 1
     resultItem:
-      itemData: {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
+      itemData: {fileID: 11400000, guid: ee8d03a7fe33bab43b7ebca7398ce0c8, type: 2}
+      count: 1
+    requiredItems:
+    - itemData: {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
+      count: 1
+    - itemData: {fileID: 11400000, guid: 8d31478abd7eca446a48fb8bb73de8ff, type: 2}
+      count: 1
+  - craftID: 2
+    resultItem:
+      itemData: {fileID: 11400000, guid: 65f68ca3600211c43a17ad5db2c1a9a4, type: 2}
       count: 1
     requiredItems:
     - itemData: {fileID: 11400000, guid: 851de120302f32444bf9a7a872d91444, type: 2}
-      count: 3
-  - craftID: 2
-    resultItem:
-      itemData: {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
-      count: 2
-    requiredItems:
-    - itemData: {fileID: 11400000, guid: c9815b39607f7ee4594ab983138bf4f5, type: 2}
-      count: 5
+      count: 1
   - craftID: 3
     resultItem:
-      itemData: {fileID: 11400000, guid: c9815b39607f7ee4594ab983138bf4f5, type: 2}
-      count: 5
+      itemData: {fileID: 11400000, guid: 88b3f3c142da7114cb4a6653e7ee20b1, type: 2}
+      count: 1
     requiredItems:
-    - itemData: {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
-      count: 2
+    - itemData: {fileID: 11400000, guid: 851de120302f32444bf9a7a872d91444, type: 2}
+      count: 1
+    - itemData: {fileID: 11400000, guid: 08af6609f3597184eba0f9f71f7314bb, type: 2}
+      count: 1
   - craftID: 4
     resultItem:
-      itemData: {fileID: 11400000, guid: 851de120302f32444bf9a7a872d91444, type: 2}
-      count: 4
+      itemData: {fileID: 11400000, guid: 163921941765da74cb439b243c81a7e2, type: 2}
+      count: 1
     requiredItems:
-    - itemData: {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
+    - itemData: {fileID: 11400000, guid: 278590b0e3037c44e858bb5df4a8ceae, type: 2}
+      count: 2
+    - itemData: {fileID: 11400000, guid: 285e1785f007a9241be48f4d03eb9242, type: 2}
       count: 1
   - craftID: 5
     resultItem:
-      itemData: {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
-      count: 3
+      itemData: {fileID: 11400000, guid: 163921941765da74cb439b243c81a7e2, type: 2}
+      count: 1
     requiredItems:
-    - itemData: {fileID: 11400000, guid: a412e5f23297d9f478863ff046eadf5d, type: 2}
+    - itemData: {fileID: 11400000, guid: 285e1785f007a9241be48f4d03eb9242, type: 2}
+      count: 2
+    - itemData: {fileID: 11400000, guid: 549fb30c725839640a4b378bce800e91, type: 2}
       count: 1
-    - itemData: {fileID: 11400000, guid: 851de120302f32444bf9a7a872d91444, type: 2}
+  - craftID: 6
+    resultItem:
+      itemData: {fileID: 11400000, guid: 163921941765da74cb439b243c81a7e2, type: 2}
       count: 1
+    requiredItems:
+    - itemData: {fileID: 11400000, guid: 549fb30c725839640a4b378bce800e91, type: 2}
+      count: 2
+    - itemData: {fileID: 11400000, guid: 278590b0e3037c44e858bb5df4a8ceae, type: 2}
+      count: 1
+  coinData: {fileID: 11400000, guid: 571db08dcac25404a96bf2ab191e48ef, type: 2}
+  shopDatas:
+  - shopID: 1
+    resultItem:
+      itemData: {fileID: 11400000, guid: bc04ff1f3b798b547a1c21d3b60ff71c, type: 2}
+      count: 1
+    requiredCoinCount: 3
+  - shopID: 2
+    resultItem:
+      itemData: {fileID: 11400000, guid: bec21fbe7ae801c4da544a212e5015c9, type: 2}
+      count: 1
+    requiredCoinCount: 3
+  - shopID: 3
+    resultItem:
+      itemData: {fileID: 11400000, guid: 851de120302f32444bf9a7a872d91444, type: 2}
+      count: 1
+    requiredCoinCount: 2
+  - shopID: 4
+    resultItem:
+      itemData: {fileID: 11400000, guid: c9815b39607f7ee4594ab983138bf4f5, type: 2}
+      count: 1
+    requiredCoinCount: 2
+  - shopID: 5
+    resultItem:
+      itemData: {fileID: 11400000, guid: 7cb4c726ab540bb40bf02be3bf994c91, type: 2}
+      count: 1
+    requiredCoinCount: 4
+  - shopID: 6
+    resultItem:
+      itemData: {fileID: 11400000, guid: 8086227c5d2376e408b1d9b298dbc706, type: 2}
+      count: 1
+    requiredCoinCount: 4
+  - shopID: 7
+    resultItem:
+      itemData: {fileID: 11400000, guid: 83705dc126efb174c9c8c5caf455e1fc, type: 2}
+      count: 1
+    requiredCoinCount: 4

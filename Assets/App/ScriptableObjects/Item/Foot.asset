@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82ad4922514b640459c96dcfd4fb25c7, type: 3}
-  m_Name: Stone
+  m_Name: Foot
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  id: 4
-  itemName: "\u77F3"
-  icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  itemType: 4
-  mass: 3
-  maxStack: 64
+  id: 13
+  itemName: "\u666E\u901A\u306E\u9774"
+  icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  itemType: 2
+  mass: 1
+  maxStack: 1
   healValue: 0
   power: 0
   weaponType: 0
   defence: 0
-  moveSpeed: 0
-  description: "\u305F\u3060\u306E\u77F3\u3002"
+  moveSpeed: 3
+  description: "\u8DB3\u304C\u901F\u304F\u306A\u308B\u9774\u3002"
