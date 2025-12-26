@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82ad4922514b640459c96dcfd4fb25c7, type: 3}
-  m_Name: Stone
+  m_Name: Amulet
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  id: 4
-  itemName: "\u77F3"
+  id: 11
+  itemName: "\u79D8\u5BC6\u306E\u304A\u3075\u3060"
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   itemType: 4
-  mass: 3
+  mass: 1
   maxStack: 64
   healValue: 0
   power: 0
   weaponType: 0
   defence: 0
   moveSpeed: 0
-  description: "\u305F\u3060\u306E\u77F3\u3002"
+  description: "\u5F37\u3044\u751F\u7269\u3092\u5F15\u304D\u5BC4\u305B\u308B\u304A\u3075\u3060\u3002"

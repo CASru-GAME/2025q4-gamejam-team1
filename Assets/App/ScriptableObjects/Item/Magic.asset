@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82ad4922514b640459c96dcfd4fb25c7, type: 3}
-  m_Name: Aspirin
+  m_Name: Magic
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  id: 6
-  itemName: "\u30A2\u30B9\u30D4\u30EA\u30F3"
-  icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  itemType: 0
+  id: 5
+  itemName: "\u9B54\u6CD5\u306E\u304B\u3051\u3089"
+  icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  itemType: 4
   mass: 1
-  maxStack: 16
-  healValue: 8
+  maxStack: 64
+  healValue: 0
   power: 0
   weaponType: 0
   defence: 0
   moveSpeed: 0
-  description: "\u93AE\u75DB\u5264\u3002"
+  description: "\u5149\u3063\u3066\u3044\u308B\u3002"
