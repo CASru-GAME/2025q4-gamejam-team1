@@ -22,3 +22,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b7044dc5d16d6fa4d9fcb0398478caab, type: 2}
   - {fileID: 11400000, guid: 96eb378994b481841b460c745841f19f, type: 2}
   - {fileID: 11400000, guid: e21c8dd5a76cb91488ec82d9fc5713b6, type: 2}
+  taskTreeGroupUsageInfos:
+  - groupID: 1
+    isUsed: 1
+  - groupID: 2
+    isUsed: 1

@@ -22,11 +22,11 @@ public class TaskTreeTab : MonoBehaviour
         instance = this;
         if (!IsGroupCountMatchingPrefabCount())
         {
-            Debug.LogError("TaskTreeTab: タスクグループの数とPrefabの数が一致していません。");
+            Debug.LogError("TaskTreeTab: タスクグループに対応するPrefabが不足しています。");
         }
         if (!AreGroupIDsMatchingPrefabs(out string details))
         {
-            Debug.LogError($"TaskTreeTab: タスクグループのIDとPrefabのIDが一致していません。詳細: {details}");
+            Debug.LogError($"TaskTreeTab: {details}");
         }
         GenerateTaskTreeUIGroups();
         GenerateTaskTreeSelectButtons();
@@ -125,7 +125,7 @@ public class TaskTreeTab : MonoBehaviour
     {
         int groupCount = TaskManager.instance.TaskTree.GetAllGroupIDs().Count();
         int prefabCount = taskTreeUIGroupsPrefab?.Length ?? 0;
-        return groupCount == prefabCount;
+        return groupCount <= prefabCount;
     }
 
     private bool AreGroupIDsMatchingPrefabs(out string details)
@@ -134,14 +134,13 @@ public class TaskTreeTab : MonoBehaviour
         int[] prefabIDs = taskTreeUIGroupsPrefab?.Select(p => p.groupID).ToArray() ?? System.Array.Empty<int>();
 
         var missing = groupIDs.Except(prefabIDs).ToArray(); // グループにあるがPrefabにないID
-        var extra = prefabIDs.Except(groupIDs).ToArray();   // PrefabにあるがグループにないID
 
-        if (groupIDs.Length != prefabIDs.Length || missing.Length > 0 || extra.Length > 0)
+        if (missing.Length > 0)
         {
-            details = $"不一致: 欠損({string.Join(",", missing)}) 余剰({string.Join(",", extra)}) / グループ数={groupIDs.Length}, Prefab数={prefabIDs.Length}";
+            details = $"タスクグループのIDがPrefabに見つかりません。欠損ID: {string.Join(",", missing)}";
             return false;
         }
-        details = "グループ数・IDともに一致しています。";
+        details = "";
         return true;
     }
 
