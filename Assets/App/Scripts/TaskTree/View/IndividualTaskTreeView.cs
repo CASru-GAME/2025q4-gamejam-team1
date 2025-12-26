@@ -18,7 +18,6 @@ public class IndividualTaskTreeView : MonoBehaviour
     [SerializeField] private bool useWorldSpace = true;
     [SerializeField] private bool useCanvasUI = true;  // 追加：Canvas UI モード
     [SerializeField] private bool autoUpdate = false;
-    [SerializeField] private Color edgeColor = Color.white;
     [SerializeField] private Color edgeFromColor = Color.white;
     [SerializeField] private Color edgeToColor = Color.white;
     [SerializeField] private bool useNodeObjectColor = false;
