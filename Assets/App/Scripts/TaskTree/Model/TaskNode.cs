@@ -9,6 +9,7 @@ public class TaskNode : ScriptableObject
     [SerializeField][Tooltip("タスクグループID")] private int taskGroupID;
     [SerializeField][Tooltip("必要な親タスクの完了条件")] private NeededCompletedParentTasks neededCompletedParentTasks;
     [SerializeField][Tooltip("タスク名")] private string taskName;
+    [SerializeField][Tooltip("タスクアイコン")] private Sprite taskIcon;
     [SerializeField][TextArea(3, 10)][Tooltip("タスクの説明")] private string description;
     [SerializeField][Tooltip("代替子タスクを持つかどうか")] private bool isHavingAlternativeChildren;
     [SerializeField][Tooltip("代替子タスクのリスト")] private List<TaskNode> alternativeChildTasks;

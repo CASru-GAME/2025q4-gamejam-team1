@@ -1090,8 +1090,9 @@ GameObject:
   - component: {fileID: 2140137177}
   - component: {fileID: 2140137176}
   - component: {fileID: 2140137175}
+  - component: {fileID: 2140137179}
   m_Layer: 5
-  m_Name: TaskTreeCanvas
+  m_Name: TaskWoodsCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1180,6 +1181,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &2140137179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2140137174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add00122378af8b4db216cb3b4c6ba94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TaskTreePanel
+  taskTreeTabObject: {fileID: 2140137174}
+  taskTreeSelectButtonObject: {fileID: 3679118469149312705, guid: c558a73b44e753c4ba99d6e08d94fcde, type: 3}
+  taskTreeUIGroupsPrefab:
+  - groupID: 1
+    groupObject: {fileID: 1411575641365471392, guid: a0512ec4b33c3c949b1d71462da23bcc, type: 3}
+  - groupID: 2
+    groupObject: {fileID: 1411575641365471392, guid: b336a125042beea478a48ba16c432eee, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

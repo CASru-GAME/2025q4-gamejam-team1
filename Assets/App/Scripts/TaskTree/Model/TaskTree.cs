@@ -40,9 +40,21 @@ public class TaskTree : ScriptableObject
         return completedNodes;
     }
 
-    public int GetTotalNodes()
+    public int GetTotalGroupsNumber()
+    {
+        return nodes.Select(n => n.TaskGroupID).Distinct().Count();
+    }
+    public List<int> GetAllGroupIDs()
+    {
+        return nodes.Select(n => n.TaskGroupID).Distinct().ToList();
+    }
+    public int GetTotalNodesNumber()
     {
         return nodes.Length;
+    }
+    public int GetTotalNodesNumberInGroup(int groupId)
+    {
+        return nodes.Count(n => n.TaskGroupID == groupId);
     }
     public struct ValidationResult
     {

@@ -17,6 +17,7 @@ MonoBehaviour:
   taskGroupID: 1
   neededCompletedParentTasks: 1
   taskName: 1_1_1_2
+  taskIcon: {fileID: 0}
   description: 
   isHavingAlternativeChildren: 0
   alternativeChildTasks: []
