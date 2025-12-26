@@ -15,11 +15,14 @@ public class Inventory : MonoBehaviour
     [SerializeField] private Canvas quickCanvas;
     [SerializeField] private GameObject craftPanelPrefab;
     [SerializeField] private Canvas craftCanvas;
+    [SerializeField] private Canvas shopCanvas;
     private ItemModel selectedItemModel;
     [SerializeField] private SelectedItem selectedItem;
     [SerializeField] private Canvas selectedItemCanvas;
     private static Inventory instance;
     public static Inventory Instance => instance;
+    private bool isOnCraft;
+    private bool isOnShop;
 
     private void Awake()
     {
@@ -50,7 +53,16 @@ public class Inventory : MonoBehaviour
             GameObject craftPanel = Instantiate(craftPanelPrefab, transform);
             craftPanel.transform.SetParent(craftCanvas.transform);
             craftPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(-80 + i % 3 * 160, 150 - i / 3 * 50);
-            craftPanel.GetComponent<CraftPanel>().Initialize(i + 1);
+            craftPanel.GetComponent<CraftPanel>().InitializeAsCraft(i + 1);
+        }
+
+        int shopCount = itemDatabase.GetShopDataCount();
+        for (int i = 0; i < shopCount; i++)
+        {
+            GameObject craftPanel = Instantiate(craftPanelPrefab, transform);
+            craftPanel.transform.SetParent(shopCanvas.transform);
+            craftPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(-80 + i % 3 * 160, 0 - i / 3 * 50);
+            craftPanel.GetComponent<CraftPanel>().InitializeAsShop(i + 1);
         }
 
         AddItem(1, 1);
@@ -59,10 +71,14 @@ public class Inventory : MonoBehaviour
         AddItem(4, 1);
         AddItem(5, 1);
         AddItem(6, 100);
+        
+        isOnCraft = true;
+        isOnShop = true;
 
         inventoryCanvas.enabled = false;
         selectedItemCanvas.enabled = false;
         craftCanvas.enabled = false;
+        shopCanvas.enabled = false;
     }
 
     private void Update()
@@ -101,11 +117,22 @@ public class Inventory : MonoBehaviour
             RemoveItemInQuickSlot(8);
     }
 
+    public void SetIsOnCraft(bool isOnCraft)
+    {
+        this.isOnCraft = isOnCraft;
+    }
+
+    public void SetIsOnShop(bool isOnShop)
+    {
+        this.isOnShop = isOnShop;
+    }
+
     private void ShowInventory()
     {
         inventoryCanvas.enabled = true;
         selectedItemCanvas.enabled = true;
-        craftCanvas.enabled = true;
+        craftCanvas.enabled = isOnCraft;
+        shopCanvas.enabled = isOnShop;
     }
 
     private void HideInventory()
@@ -113,6 +140,7 @@ public class Inventory : MonoBehaviour
         inventoryCanvas.enabled = false;
         selectedItemCanvas.enabled = false;
         craftCanvas.enabled = false;
+        shopCanvas.enabled = false;
         DropSelectedItem();
     }
 
@@ -282,6 +310,20 @@ public class Inventory : MonoBehaviour
         foreach (var itemAndCount in requiredItems)
             RemoveItem(itemAndCount.ItemData.ID, itemAndCount.Count);
         ItemAndCount resultItem = itemDatabase.GetCraftResultItem(craftID);
+        AddItem(resultItem.ItemData.ID, resultItem.Count);
+    }
+
+    public bool CanBuy(int shopID)
+    {
+        ItemAndCount requiredItems = itemDatabase.GetShopRequiredItems(shopID);
+        return CanRemoveItem(requiredItems.ItemData.ID, requiredItems.Count);
+    }
+
+    public void BuyItem(int shopID)
+    {
+        ItemAndCount requiredCoins = itemDatabase.GetShopRequiredItems(shopID);
+        RemoveItem(requiredCoins.ItemData.ID, requiredCoins.Count);
+        ItemAndCount resultItem = itemDatabase.GetShopResultItem(shopID);
         AddItem(resultItem.ItemData.ID, resultItem.Count);
     }
 }

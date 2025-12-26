@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82ad4922514b640459c96dcfd4fb25c7, type: 3}
-  m_Name: Stone
+  m_Name: Rope
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  id: 4
-  itemName: "\u77F3"
+  id: 9
+  itemName: "\u30ED\u30FC\u30D7"
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   itemType: 4
   mass: 3
@@ -23,4 +23,4 @@ MonoBehaviour:
   weaponType: 0
   defence: 0
   moveSpeed: 0
-  description: "\u305F\u3060\u306E\u77F3\u3002"
+  description: "\u3057\u3063\u304B\u308A\u3057\u305F\u30ED\u30FC\u30D7\u3002"
