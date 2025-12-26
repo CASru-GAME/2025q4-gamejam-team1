@@ -41,6 +41,16 @@ public class TaskTree : ScriptableObject
         }
         return activeNodes;
     }
+    public List<TaskNode> GetNodesByGroupID(int groupId)
+    {
+        List<TaskNode> groupNodes = new List<TaskNode>();
+        foreach (var node in nodes)
+        {
+            if (node.TaskGroupID == groupId && IsNodeInUsedGroup(node))
+                groupNodes.Add(node);
+        }
+        return groupNodes;
+    }
 
     public List<TaskNode> GetCompletedNodes()
     {

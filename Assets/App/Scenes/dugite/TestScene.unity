@@ -1200,6 +1200,8 @@ MonoBehaviour:
     groupObject: {fileID: 1411575641365471392, guid: a0512ec4b33c3c949b1d71462da23bcc, type: 3}
   - groupID: 2
     groupObject: {fileID: 1411575641365471392, guid: b336a125042beea478a48ba16c432eee, type: 3}
+  - groupID: 3
+    groupObject: {fileID: 1411575641365471392, guid: 10b891f316c05bb46b185b66377cc36c, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
