@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class PickUpItem : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public int ItemID;
+    public int Count;
     void Start()
     {
         
@@ -14,8 +15,18 @@ public class PickUpItem : MonoBehaviour
         
     }
 
-    public void PickUP()
+
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        
+        Debug.Log("アイテムに接触");
+        ItemObject item = other.GetComponent<ItemObject>();
+        if (item != null)
+        {
+            ItemID = item.ItemID;
+            Count = item.Count;
+            Debug.Log("アイテムにID: " + ItemID);
+            Debug.Log("アイテムにCount: " + Count);
+        }
     }
+
 }
