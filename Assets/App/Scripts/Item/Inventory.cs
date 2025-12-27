@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -5,14 +6,16 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
-    [SerializeField] private int capacity;
-    [SerializeField] private int quickSlotCount;
+    [SerializeField] private int inventoryCapacity;
+    [SerializeField] private int quickSlotCapacity;
+    [SerializeField] private int boxCapacity;
     private ItemModel[] itemModels;
     private ItemInInventory[] itemInInventory;
     [SerializeField] private GameObject itemSpacePrefab;
     [SerializeField] private ItemDatabase itemDatabase;
     [SerializeField] private Canvas inventoryCanvas;
     [SerializeField] private Canvas quickCanvas;
+    [SerializeField] private Canvas boxCanvas;
     [SerializeField] private GameObject craftPanelPrefab;
     [SerializeField] private Canvas craftCanvas;
     [SerializeField] private Canvas shopCanvas;
@@ -23,26 +26,37 @@ public class Inventory : MonoBehaviour
     public static Inventory Instance => instance;
     private bool isOnCraft;
     private bool isOnShop;
+    private bool isOnBox;
+    private ItemBox currentItemBox;
 
-    private void Awake()
+    private void Start()
     {
         instance = this;
-        itemModels = new ItemModel[capacity + 3];
-        itemInInventory = new ItemInInventory[capacity + 3];
+        itemModels = new ItemModel[inventoryCapacity + 3 + boxCapacity];
+        itemInInventory = new ItemInInventory[inventoryCapacity + 3 + boxCapacity];
         
-        for (int i = 0; i < capacity + 3; i++)
+        for (int i = 0; i < inventoryCapacity + 3 + boxCapacity; i++)
         {
             GameObject itemSpace = Instantiate(itemSpacePrefab, transform);
-            if(i < quickSlotCount || i >= capacity)
+
+            if(i < quickSlotCapacity)
+                itemSpace.transform.SetParent(quickCanvas.transform);
+            else if(i < inventoryCapacity)
+                itemSpace.transform.SetParent(inventoryCanvas.transform);
+            else if(i < inventoryCapacity + 3)
                 itemSpace.transform.SetParent(quickCanvas.transform);
             else
-                itemSpace.transform.SetParent(inventoryCanvas.transform);
-            if(i < quickSlotCount)
+                itemSpace.transform.SetParent(boxCanvas.transform);
+
+
+            if(i < quickSlotCapacity)
                 itemSpace.GetComponent<RectTransform>().anchoredPosition = new Vector2(-400 + i * 50, -150);
-            else if(i < capacity)
-                itemSpace.GetComponent<RectTransform>().anchoredPosition = new Vector2(-400 + i % quickSlotCount * 50, 200 - i / quickSlotCount * 50);
-            else
-                itemSpace.GetComponent<RectTransform>().anchoredPosition = new Vector2(-400 + (i - capacity) * 50, -200);
+            else if(i < inventoryCapacity)
+                itemSpace.GetComponent<RectTransform>().anchoredPosition = new Vector2(-400 + i % quickSlotCapacity * 50, 200 - i / quickSlotCapacity * 50);
+            else if(i < inventoryCapacity + 3)
+                itemSpace.GetComponent<RectTransform>().anchoredPosition = new Vector2(-400 + (i - inventoryCapacity) * 50, -200);
+            else 
+                itemSpace.GetComponent<RectTransform>().anchoredPosition = new Vector2(-100 + (i - inventoryCapacity - 3) % quickSlotCapacity * 50, 150);
             itemInInventory[i] = itemSpace.GetComponent<ItemInInventory>();
             itemInInventory[i].Initialize(i);
         }
@@ -72,48 +86,36 @@ public class Inventory : MonoBehaviour
         AddItem(5, 1);
         AddItem(6, 100);
         
-        isOnCraft = true;
-        isOnShop = true;
+        isOnCraft = false;
+        isOnShop = false;
+        isOnBox = true;
 
         inventoryCanvas.enabled = false;
         selectedItemCanvas.enabled = false;
         craftCanvas.enabled = false;
         shopCanvas.enabled = false;
+        boxCanvas.enabled = false;
     }
 
-    private void Update()
+    public void UseItemInQuickSlot()
     {
-        var current = Keyboard.current;
-        if (current == null) return;
-
-        if (current.eKey.wasReleasedThisFrame)
-            if (inventoryCanvas.enabled)
-                HideInventory();
-            else
-                ShowInventory();
-
-        UseItemInQuickSlot();
-    }
-
-    private void UseItemInQuickSlot()
-    {
-        if (Keyboard.current.digit1Key.wasPressedThisFrame && itemModels[0] != null && itemDatabase.IsItemType(itemModels[0].ItemID, ItemData.ItemType.Medic) && quickSlotCount >= 1)
+        if (Keyboard.current.digit1Key.wasPressedThisFrame && itemModels[0] != null && itemDatabase.IsItemType(itemModels[0].ItemID, ItemData.ItemType.Medic) && quickSlotCapacity >= 1)
             RemoveItemInQuickSlot(0);
-        else if (Keyboard.current.digit2Key.wasPressedThisFrame && itemModels[1] != null && itemDatabase.IsItemType(itemModels[1].ItemID, ItemData.ItemType.Medic) && quickSlotCount >= 2)
+        else if (Keyboard.current.digit2Key.wasPressedThisFrame && itemModels[1] != null && itemDatabase.IsItemType(itemModels[1].ItemID, ItemData.ItemType.Medic) && quickSlotCapacity >= 2)
             RemoveItemInQuickSlot(1);
-        else if (Keyboard.current.digit3Key.wasPressedThisFrame && itemModels[2] != null && itemDatabase.IsItemType(itemModels[2].ItemID, ItemData.ItemType.Medic) && quickSlotCount >= 3)
+        else if (Keyboard.current.digit3Key.wasPressedThisFrame && itemModels[2] != null && itemDatabase.IsItemType(itemModels[2].ItemID, ItemData.ItemType.Medic) && quickSlotCapacity >= 3)
             RemoveItemInQuickSlot(2);
-        else if (Keyboard.current.digit4Key.wasPressedThisFrame && itemModels[3] != null && itemDatabase.IsItemType(itemModels[3].ItemID, ItemData.ItemType.Medic) && quickSlotCount >= 4)
+        else if (Keyboard.current.digit4Key.wasPressedThisFrame && itemModels[3] != null && itemDatabase.IsItemType(itemModels[3].ItemID, ItemData.ItemType.Medic) && quickSlotCapacity >= 4)
             RemoveItemInQuickSlot(3);
-        else if (Keyboard.current.digit5Key.wasPressedThisFrame && itemModels[4] != null && itemDatabase.IsItemType(itemModels[4].ItemID, ItemData.ItemType.Medic) && quickSlotCount >= 5)
+        else if (Keyboard.current.digit5Key.wasPressedThisFrame && itemModels[4] != null && itemDatabase.IsItemType(itemModels[4].ItemID, ItemData.ItemType.Medic) && quickSlotCapacity >= 5)
             RemoveItemInQuickSlot(4);
-        else if (Keyboard.current.digit6Key.wasPressedThisFrame && itemModels[5] != null && itemDatabase.IsItemType(itemModels[5].ItemID, ItemData.ItemType.Medic) && quickSlotCount >= 6)
+        else if (Keyboard.current.digit6Key.wasPressedThisFrame && itemModels[5] != null && itemDatabase.IsItemType(itemModels[5].ItemID, ItemData.ItemType.Medic) && quickSlotCapacity >= 6)
             RemoveItemInQuickSlot(5);
-        else if (Keyboard.current.digit7Key.wasPressedThisFrame && itemModels[6] != null && itemDatabase.IsItemType(itemModels[6].ItemID, ItemData.ItemType.Medic) && quickSlotCount >= 7)
+        else if (Keyboard.current.digit7Key.wasPressedThisFrame && itemModels[6] != null && itemDatabase.IsItemType(itemModels[6].ItemID, ItemData.ItemType.Medic) && quickSlotCapacity >= 7)
             RemoveItemInQuickSlot(6);
-        else if (Keyboard.current.digit8Key.wasPressedThisFrame && itemModels[7] != null && itemDatabase.IsItemType(itemModels[7].ItemID, ItemData.ItemType.Medic) && quickSlotCount >= 8)
+        else if (Keyboard.current.digit8Key.wasPressedThisFrame && itemModels[7] != null && itemDatabase.IsItemType(itemModels[7].ItemID, ItemData.ItemType.Medic) && quickSlotCapacity >= 8)
             RemoveItemInQuickSlot(7);
-        else if (Keyboard.current.digit9Key.wasPressedThisFrame && itemModels[8] != null && itemDatabase.IsItemType(itemModels[8].ItemID, ItemData.ItemType.Medic) && quickSlotCount >= 9)
+        else if (Keyboard.current.digit9Key.wasPressedThisFrame && itemModels[8] != null && itemDatabase.IsItemType(itemModels[8].ItemID, ItemData.ItemType.Medic) && quickSlotCapacity >= 9)
             RemoveItemInQuickSlot(8);
     }
 
@@ -127,21 +129,59 @@ public class Inventory : MonoBehaviour
         this.isOnShop = isOnShop;
     }
 
-    private void ShowInventory()
+    public void SetIsOnBox(bool isOnBox)
+    {
+        this.isOnBox = isOnBox;
+    }
+
+    public void SetItemsInBox((int itemID, int count)[] itemsInBox, ItemBox itemBox)
+    {
+        currentItemBox = itemBox;
+        for (int i = 0; i < boxCapacity; i++)
+        {
+            if (i >= itemsInBox.Length || itemsInBox[i].itemID == -1)
+            {
+                itemModels[inventoryCapacity + 3 + i] = null;
+                itemInInventory[inventoryCapacity + 3 + i].GetEmpty();
+            }
+            else
+            {
+                itemModels[inventoryCapacity + 3 + i] = ItemModel.AddNew(itemsInBox[i].itemID, itemsInBox[i].count);
+                itemInInventory[inventoryCapacity + 3 + i].AddNew(itemsInBox[i].itemID, itemsInBox[i].count, inventoryCapacity + 3 + i);
+            }
+        }
+    }
+
+    public void ShowInventory()
     {
         inventoryCanvas.enabled = true;
         selectedItemCanvas.enabled = true;
         craftCanvas.enabled = isOnCraft;
         shopCanvas.enabled = isOnShop;
+        boxCanvas.enabled = isOnBox;
     }
 
-    private void HideInventory()
+    public void HideInventory()
     {
         inventoryCanvas.enabled = false;
         selectedItemCanvas.enabled = false;
         craftCanvas.enabled = false;
         shopCanvas.enabled = false;
+        boxCanvas.enabled = false;
         DropSelectedItem();
+
+        if (isOnBox && currentItemBox != null)
+        {
+            (int ItemID, int Count)[] newItems = new (int ItemID, int Count)[boxCapacity];
+            for (int i = 0; i < boxCapacity; i++)
+            {
+                if (itemModels[inventoryCapacity + 3 + i] != null)
+                    newItems[i] = (itemModels[inventoryCapacity + 3 + i].ItemID, itemModels[inventoryCapacity + 3 + i].Count);
+                else
+                    newItems[i] = (-1, 0);
+            }
+            currentItemBox.UpdateItems(newItems);
+        }
     }
 
     public void DropSelectedItem()
@@ -158,7 +198,7 @@ public class Inventory : MonoBehaviour
     public void AddItem(int itemID, int count)
     {
         int tmpCount = count;
-        for (int i = 0; i < capacity; i++)
+        for (int i = 0; i < inventoryCapacity; i++)
             if (itemModels[i] != null && itemModels[i].ItemID == itemID && itemModels[i].Count < itemDatabase.GetMaxStack(itemID) && tmpCount > 0)
                 if(tmpCount + itemModels[i].Count > itemDatabase.GetMaxStack(itemID))
                 {
@@ -176,7 +216,7 @@ public class Inventory : MonoBehaviour
                     tmpCount = 0;
                 }
 
-        for (int i = 0; i < capacity; i++)
+        for (int i = 0; i < inventoryCapacity; i++)
             if (itemModels[i] == null && tmpCount > 0)
                 if(tmpCount > itemDatabase.GetMaxStack(itemID))
                 {
@@ -243,9 +283,9 @@ public class Inventory : MonoBehaviour
     public bool CanSwap(int index)
     {
         if(!inventoryCanvas.enabled) return false;
-        if(index < capacity || selectedItemModel == null) return true;
+        if(index < inventoryCapacity || index >= inventoryCapacity + 3 || selectedItemModel == null) return true;
 
-        int specialIndex = index - capacity;
+        int specialIndex = index - inventoryCapacity;
         if(specialIndex == 0 && itemDatabase.IsItemType(selectedItemModel.ItemID, ItemData.ItemType.Weapon)) return true;
         if(specialIndex == 1 && itemDatabase.IsItemType(selectedItemModel.ItemID, ItemData.ItemType.Armor)) return true;
         if(specialIndex == 2 && itemDatabase.IsItemType(selectedItemModel.ItemID, ItemData.ItemType.Foot)) return true;
@@ -286,17 +326,32 @@ public class Inventory : MonoBehaviour
 
     public int GetWeaponID()
     {
-        return itemModels[capacity] != null ? itemModels[capacity].ItemID : -1;
+        return itemModels[inventoryCapacity] != null ? itemModels[inventoryCapacity].ItemID : -1;
+    }
+
+    public int GetWeaponPower()
+    {
+        return itemModels[inventoryCapacity] != null ? itemDatabase.GetPower(GetWeaponID()) : 0;
     }
 
     public int GetArmorID()
     {
-        return itemModels[capacity + 1] != null ? itemModels[capacity + 1].ItemID : -1;
+        return itemModels[inventoryCapacity + 1] != null ? itemModels[inventoryCapacity + 1].ItemID : -1;
+    }
+
+    public int GetArmorDefense()
+    {
+        return itemModels[inventoryCapacity + 1] != null ? itemDatabase.GetDefense(GetArmorID()) : 0;
     }
 
     public int GetFootID()
     {
-        return itemModels[capacity + 2] != null ? itemModels[capacity + 2].ItemID : -1;
+        return itemModels[inventoryCapacity + 2] != null ? itemModels[inventoryCapacity + 2].ItemID : -1;
+    }
+
+    public int GetFootMoveSpeed()
+    {
+        return itemModels[inventoryCapacity + 2] != null ? itemDatabase.GetMoveSpeed(GetFootID()) : 0;
     }
 
     public bool CanCraft(int craftID)
