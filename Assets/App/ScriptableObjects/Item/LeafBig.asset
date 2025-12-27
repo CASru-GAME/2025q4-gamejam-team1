@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82ad4922514b640459c96dcfd4fb25c7, type: 3}
-  m_Name: Stone
+  m_Name: LeafBig
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  id: 4
-  itemName: "\u77F3"
-  icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  itemType: 4
-  mass: 3
-  maxStack: 64
-  healValue: 0
+  id: 2
+  itemName: "\u8449\u3063\u3071(\u5927)"
+  icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  itemType: 0
+  mass: 2
+  maxStack: 16
+  healValue: 10
   power: 0
   weaponType: 0
   defence: 0
   moveSpeed: 0
-  description: "\u305F\u3060\u306E\u77F3\u3002"
+  description: "\u5927\u304D\u3081\u306E\u8449\u3063\u3071\u3002"

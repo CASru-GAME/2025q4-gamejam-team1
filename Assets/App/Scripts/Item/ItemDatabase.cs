@@ -7,6 +7,7 @@ public class ItemDatabase : ScriptableObject
 {
     [SerializeField] private ItemData[] itemDatas;
     [SerializeField] private CraftData[] craftDatas;
+    [SerializeField] private CraftData[] shopDatas;
 
     public string GetName(int itemID)
     {
@@ -116,6 +117,28 @@ public class ItemDatabase : ScriptableObject
     {
         return craftDatas.Length;
     }
+
+    public ItemAndCount GetShopRequiredItems(int shopID)
+    {
+        foreach (var shopData in shopDatas)
+            if (shopData.CraftID == shopID)
+                return shopData.RequiredItems[0];
+        return null;
+    }
+
+
+    public ItemAndCount GetShopResultItem(int shopID)
+    {
+        foreach (var shopData in shopDatas)
+            if (shopData.CraftID == shopID)
+                return shopData.ResultItem;
+        return null;
+    }
+
+    public int GetShopDataCount()
+    {
+        return shopDatas.Length;
+    }
 }
 
 [Serializable]
@@ -138,4 +161,10 @@ public class ItemAndCount
 
     public ItemData ItemData => itemData;
     public int Count => count;
+
+    public ItemAndCount(ItemData itemData, int count)
+    {
+        this.itemData = itemData;
+        this.count = count;
+    }
 }

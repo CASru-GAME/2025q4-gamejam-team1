@@ -9,7 +9,7 @@ public class TaskTree : ScriptableObject
     [SerializeField][Header("自動割当・削除のため書込み禁止")] private TaskNode[] nodes;
 
     public TaskNode[] Nodes => nodes;
-    public TaskNode GetNodeByID(int id)
+    public TaskNode GetNodeById(int id)
     {
         foreach (var node in nodes)
         {

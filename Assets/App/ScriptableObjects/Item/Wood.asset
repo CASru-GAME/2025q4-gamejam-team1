@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82ad4922514b640459c96dcfd4fb25c7, type: 3}
   m_Name: Wood
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  id: 2
-  itemName: "\u6728\u306E\u679D"
+  id: 3
+  itemName: "\u6728\u6750"
   icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   itemType: 4
-  mass: 1
+  mass: 3
   maxStack: 64
   healValue: 0
   power: 0
   weaponType: 0
   defence: 0
   moveSpeed: 0
-  description: "\u305F\u3060\u306E\u6728\u306E\u679D\u3002"
+  description: "\u305F\u3060\u306E\u6728\u6750\u3002"

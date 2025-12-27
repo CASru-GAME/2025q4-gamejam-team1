@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82ad4922514b640459c96dcfd4fb25c7, type: 3}
-  m_Name: NormalFoot
+  m_Name: Oars
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  id: 4
-  itemName: "\u666E\u901A\u306E\u9774"
-  icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  itemType: 2
-  mass: 1
-  maxStack: 1
+  id: 10
+  itemName: "\u30AA\u30FC\u30EB"
+  icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  itemType: 4
+  mass: 3
+  maxStack: 64
   healValue: 0
   power: 0
   weaponType: 0
   defence: 0
-  moveSpeed: 3
-  description: "\u3088\u304F\u3042\u308B\u9774\u3002"
+  moveSpeed: 0
+  description: "\u3057\u3063\u304B\u308A\u3057\u305F\u30AA\u30FC\u30EB\u3002"

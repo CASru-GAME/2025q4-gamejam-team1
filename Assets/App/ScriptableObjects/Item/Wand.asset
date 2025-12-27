@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82ad4922514b640459c96dcfd4fb25c7, type: 3}
-  m_Name: OddSword
+  m_Name: Wand
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  id: 5
-  itemName: "\u5909\u306A\u5263"
+  id: 17
+  itemName: "\u9B54\u6CD5\u306E\u6756"
   icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   itemType: 3
   mass: 1
   maxStack: 1
   healValue: 0
-  power: 0
-  weaponType: 0
+  power: 4
+  weaponType: 3
   defence: 0
   moveSpeed: 0
-  description: "\u9055\u548C\u611F\u306E\u3042\u308B\u5263\u3002"
+  description: "\u9B54\u6CD5\u304C\u4F7F\u3048\u308B\u6756\u3002"
