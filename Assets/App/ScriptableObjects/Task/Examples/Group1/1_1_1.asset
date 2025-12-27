@@ -33,5 +33,5 @@ MonoBehaviour:
   targetEnemies: []
   rewardItems: []
   isCompleted: 0
-  isActive: 0
+  isActive: 1
   isDelivered: 0
