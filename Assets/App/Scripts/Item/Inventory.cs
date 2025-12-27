@@ -88,7 +88,7 @@ public class Inventory : MonoBehaviour
         
         isOnCraft = false;
         isOnShop = false;
-        isOnBox = true;
+        isOnBox = false;
 
         inventoryCanvas.enabled = false;
         selectedItemCanvas.enabled = false;
@@ -152,6 +152,22 @@ public class Inventory : MonoBehaviour
         }
     }
 
+
+    private void Update()
+    {
+        if (Keyboard.current.iKey.wasPressedThisFrame)
+        {
+            if (inventoryCanvas.enabled)
+                HideInventory();
+            else
+                ShowInventory();
+        }
+    }
+
+
+
+
+
     public void ShowInventory()
     {
         inventoryCanvas.enabled = true;
@@ -205,13 +221,13 @@ public class Inventory : MonoBehaviour
                     int diff = itemDatabase.GetMaxStack(itemID) - itemModels[i].Count;
                     tmpCount -= diff;
                     itemModels[i] = itemModels[i].AddCount(diff);
-                    PlayerStatistics.instance.CollectItem(itemID, diff);
+//                    PlayerStatistics.instance.CollectItem(itemID, diff);
                     itemInInventory[i].UpdateCount(itemModels[i].Count);
                 }
                 else
                 {
                     itemModels[i] = itemModels[i].AddCount(tmpCount);
-                    PlayerStatistics.instance.CollectItem(itemID, tmpCount);
+//                    PlayerStatistics.instance.CollectItem(itemID, tmpCount);
                     itemInInventory[i].UpdateCount(itemModels[i].Count);
                     tmpCount = 0;
                 }
@@ -223,26 +239,25 @@ public class Inventory : MonoBehaviour
                     int diff = itemDatabase.GetMaxStack(itemID);
                     tmpCount -= diff;
                     itemModels[i] = ItemModel.AddNew(itemID, diff);
-                    PlayerStatistics.instance.CollectItem(itemID, diff);
+//                    PlayerStatistics.instance.CollectItem(itemID, diff);
                     itemInInventory[i].AddNew(itemID, diff, i);
                 }
                 else
                 {
                     itemModels[i] = ItemModel.AddNew(itemID, tmpCount);
-                    PlayerStatistics.instance.CollectItem(itemID, tmpCount);
+//                    PlayerStatistics.instance.CollectItem(itemID, tmpCount);
                     itemInInventory[i].AddNew(itemID, tmpCount, i);
                     return;
                 }
         
         if (tmpCount == 0) return;
-        Vector2 randomOffset = new(UnityEngine.Random.Range(-0.2f, 0.2f), UnityEngine.Random.Range(-0.2f, 0.2f));
-        ItemInstantiater.InstantiateItem((Vector2)Camera.main.transform.position + randomOffset, itemID, tmpCount);
+        ItemInstantiater.InstantiateItem((Vector2)Camera.main.transform.position, itemID, tmpCount);
     }
 
     public bool CanRemoveItem(int itemID, int count)
     {
         int tmpCount = 0;
-        for(int i = 0; i < itemModels.Length; i++)
+        for(int i = 0; i < inventoryCapacity; i++)
             if (itemModels[i] != null && itemModels[i].ItemID == itemID)
                 tmpCount += itemModels[i].Count;
         return tmpCount >= count;
@@ -251,7 +266,7 @@ public class Inventory : MonoBehaviour
     public void RemoveItem(int itemID, int count)
     {
         int tmpCount = count;
-        for (int i = 0; i < itemModels.Length; i++)
+        for (int i = 0; i < inventoryCapacity; i++)
             if (itemModels[i] != null && itemModels[i].ItemID == itemID && tmpCount > 0)
                 if(itemModels[i].Count <= tmpCount)
                 {

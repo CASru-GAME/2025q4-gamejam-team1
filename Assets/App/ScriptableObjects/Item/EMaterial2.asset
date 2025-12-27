@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: EMaterial2
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: 7
-  itemName: "\u6575\u7D20\u67502"
-  icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  itemName: "\u9752\u30AD\u30CE\u30B3"
+  icon: {fileID: -5335029339228821221, guid: f94da3ef0409a7d4097d4009af2e7598, type: 3}
   itemType: 4
   mass: 1
   maxStack: 64
@@ -23,4 +23,4 @@ MonoBehaviour:
   weaponType: 0
   defence: 0
   moveSpeed: 0
-  description: "\u6575\u306E\u7D20\u67502\u3002"
+  description: "\u9752\u3044\u30AD\u30CE\u30B3\u3002"

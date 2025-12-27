@@ -8,12 +8,13 @@ public class EnemyController2
     private Transform transform; // 死亡時に自身を消すために保持
     private int itemID;
     private int itemCount;
+    private int enemyID;
 
     // HPを外部から確認できるようにする
     public int CurrentHP => hpSystem.CurrentHP;
 
     // コンストラクタ:生成時に体(transform)と最大HP、アイテムのIDと個数を受け取るようにする
-    public EnemyController2(Transform selfTransform, int maxHP, int itemID, int itemCount)
+    public EnemyController2(Transform selfTransform, int maxHP, int itemID, int itemCount, int enemyID)
     
     {
         
@@ -21,6 +22,7 @@ public class EnemyController2
         this.hpSystem = new EnemyHP(maxHP);
         this.itemID = itemID;
         this.itemCount = itemCount;
+        this.enemyID = enemyID;
     }
 
     // 毎フレームの処理（外部のUpdateから呼んでもらう）

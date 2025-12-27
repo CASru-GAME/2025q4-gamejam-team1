@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class EnemyEntity : MonoBehaviour
 {
+    // ID
+    [Header("ID")]
+    [SerializeField] private int enemyID;
+    public int EnemyID => enemyID;
+
     // 敵の移動速度
     [Header("移動設定")]
     [SerializeField] private float speed = 2.0f;
@@ -27,12 +32,17 @@ public class EnemyEntity : MonoBehaviour
     [SerializeField] private int dropItemID;
     [SerializeField] private int dropItemCount;
 
+    [SerializeField] private EnemySearch enemySearch;
+
     void Awake()
     {
         // 自分のtransformと速度、うろつきの間隔、攻撃範囲、攻撃間隔を渡してEnemyController1を生成
         controller = new EnemyController1(this.transform, speed, minTime, maxTime, attackRange, attackInterval);
         // EnemyController2を生成、同時に中でEnemyHPも生成される。加えてアイテムドロップ情報も渡す
-        controller2 = new EnemyController2(this.transform, maxHP, dropItemID, dropItemCount);
+        controller2 = new EnemyController2(this.transform, maxHP, dropItemID, dropItemCount, enemyID);
+        
+        // EnemySearchにcontroller1を渡して初期化する
+        enemySearch.Initialize(controller);
     }
     // Update is called once per frame
     void Update()
@@ -47,11 +57,6 @@ public class EnemyEntity : MonoBehaviour
     // プレイヤーが範囲（Trigger）に入った瞬間に呼ばれる
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // 相手のタグが「Player」ならそれをターゲットにする
-        if (other.CompareTag("Player"))
-        {
-            controller.SetTarget(other.gameObject);
-        }
         // もしぶつかった相手のタグが「PlayerAttack」なら
         if (other.CompareTag("PlayerAttack"))
         {
