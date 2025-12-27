@@ -152,6 +152,22 @@ public class Inventory : MonoBehaviour
         }
     }
 
+
+    private void Update()
+    {
+        if (Keyboard.current.iKey.wasPressedThisFrame)
+        {
+            if (inventoryCanvas.enabled)
+                HideInventory();
+            else
+                ShowInventory();
+        }
+    }
+
+
+
+
+
     public void ShowInventory()
     {
         inventoryCanvas.enabled = true;
@@ -223,13 +239,13 @@ public class Inventory : MonoBehaviour
                     int diff = itemDatabase.GetMaxStack(itemID);
                     tmpCount -= diff;
                     itemModels[i] = ItemModel.AddNew(itemID, diff);
-                    PlayerStatistics.instance.CollectItem(itemID, diff);
+//                    PlayerStatistics.instance.CollectItem(itemID, diff);
                     itemInInventory[i].AddNew(itemID, diff, i);
                 }
                 else
                 {
                     itemModels[i] = ItemModel.AddNew(itemID, tmpCount);
-                    PlayerStatistics.instance.CollectItem(itemID, tmpCount);
+//                    PlayerStatistics.instance.CollectItem(itemID, tmpCount);
                     itemInInventory[i].AddNew(itemID, tmpCount, i);
                     return;
                 }
