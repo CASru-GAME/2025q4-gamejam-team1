@@ -20,6 +20,7 @@ public class HP
         if(damage < 0)
         {
             Debug.LogWarning("damageがマイナスです");
+            return;
         }
         currentHP -= damage;
         if(currentHP < 0)
@@ -40,6 +41,7 @@ public class HP
         if(heal < 0)
         {
             Debug.LogWarning("healがマイナスです");
+            return;
         }
     }
 
