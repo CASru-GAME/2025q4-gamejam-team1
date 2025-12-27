@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.Text;
+using Unity.VisualScripting;
 
 [CreateAssetMenu(fileName = "TaskTree", menuName = "Task/TaskTree")]
 public class TaskTree : ScriptableObject
@@ -9,11 +10,23 @@ public class TaskTree : ScriptableObject
     [SerializeField][Header("自動割当・削除のため書込み禁止")] private TaskNode[] nodes;
 
     public TaskNode[] Nodes => nodes;
+    [SerializeField][Header("書き込み可")] private TaskTreeGroupUsageInfo[] taskTreeGroupUsageInfos;
+    private bool IsNodeInUsedGroup(TaskNode node)
+    {
+        foreach (var usageInfo in taskTreeGroupUsageInfos)
+        {
+            if (usageInfo.groupID == node.TaskGroupID)
+            {
+                return usageInfo.isUsed;
+            }
+        }
+        return false;
+    }
     public TaskNode GetNodeById(int id)
     {
         foreach (var node in nodes)
         {
-            if (node.ID == id)
+            if ((node.ID == id) && IsNodeInUsedGroup(node))
                 return node;
         }
         return null;
@@ -23,10 +36,20 @@ public class TaskTree : ScriptableObject
         List<TaskNode> activeNodes = new List<TaskNode>();
         foreach (var node in nodes)
         {
-            if (node.IsActive)
+            if (node.IsActive && IsNodeInUsedGroup(node))
                 activeNodes.Add(node);
         }
         return activeNodes;
+    }
+    public List<TaskNode> GetNodesByGroupID(int groupId)
+    {
+        List<TaskNode> groupNodes = new List<TaskNode>();
+        foreach (var node in nodes)
+        {
+            if (node.TaskGroupID == groupId && IsNodeInUsedGroup(node))
+                groupNodes.Add(node);
+        }
+        return groupNodes;
     }
 
     public List<TaskNode> GetCompletedNodes()
@@ -34,15 +57,27 @@ public class TaskTree : ScriptableObject
         List<TaskNode> completedNodes = new List<TaskNode>();
         foreach (var node in nodes)
         {
-            if (node.IsCompleted)
+            if (node.IsCompleted && IsNodeInUsedGroup(node))
                 completedNodes.Add(node);
         }
         return completedNodes;
     }
 
-    public int GetTotalNodes()
+    public int GetTotalGroupsNumber()
     {
-        return nodes.Length;
+        return nodes.Where(n => IsNodeInUsedGroup(n)).Select(n => n.TaskGroupID).Distinct().Count();
+    }
+    public List<int> GetAllGroupIDs()
+    {
+        return nodes.Where(n => IsNodeInUsedGroup(n)).Select(n => n.TaskGroupID).Distinct().ToList();
+    }
+    public int GetTotalNodesNumber()
+    {
+        return nodes.Count(n => IsNodeInUsedGroup(n));
+    }
+    public int GetTotalNodesNumberInGroup(int groupId)
+    {
+        return nodes.Where(n => IsNodeInUsedGroup(n)).Count(n => n.TaskGroupID == groupId);
     }
     public struct ValidationResult
     {
@@ -550,5 +585,36 @@ public class TaskTree : ScriptableObject
             default:
                 return false;
         }
+    }
+
+#if UNITY_EDITOR
+
+    private void OnValidate()
+    {
+        // nodes 配列が変更されたときに taskTreeGroupUsageInfos を自動更新
+        var groupIds = nodes?.Select(n => n.TaskGroupID).Distinct().OrderBy(id => id).ToList() ?? new List<int>();
+        var usageInfoDict = taskTreeGroupUsageInfos?.ToDictionary(info => info.groupID) ?? new Dictionary<int, TaskTreeGroupUsageInfo>();
+
+        var newUsageInfos = new List<TaskTreeGroupUsageInfo>();
+        foreach (var groupId in groupIds)
+        {
+            if (usageInfoDict.TryGetValue(groupId, out var info))
+            {
+                newUsageInfos.Add(info);
+            }
+            else
+            {
+                newUsageInfos.Add(new TaskTreeGroupUsageInfo { groupID = groupId, isUsed = true });
+            }
+        }
+        taskTreeGroupUsageInfos = newUsageInfos.ToArray();
+    }
+
+#endif
+    [System.Serializable]
+    private class TaskTreeGroupUsageInfo
+    {
+        public int groupID;
+        public bool isUsed;
     }
 }

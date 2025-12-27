@@ -17,6 +17,7 @@ MonoBehaviour:
   taskGroupID: 1
   neededCompletedParentTasks: 0
   taskName: 1_1
+  taskIcon: {fileID: 0}
   description: 
   isHavingAlternativeChildren: 1
   alternativeChildTasks:
@@ -30,5 +31,5 @@ MonoBehaviour:
   targetEnemies: []
   rewardItems: []
   isCompleted: 1
-  isActive: 0
+  isActive: 1
   isDelivered: 0
