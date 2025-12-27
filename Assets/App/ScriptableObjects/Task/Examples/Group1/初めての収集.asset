@@ -34,5 +34,5 @@ MonoBehaviour:
   - id: 2
     count: 1
   isCompleted: 0
-  isActive: 0
+  isActive: 1
   isDelivered: 0

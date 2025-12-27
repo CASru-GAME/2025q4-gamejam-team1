@@ -135,6 +135,34 @@ public class TaskTreeTab : MonoBehaviour
 
                 wrapper.SetInfoPanelTexts(pair.taskID, status, isAlt, title, type, description, need, reward);
                 SetInfoPanelButtonFunctions(pair.taskID);
+                SetInfoPanelIcon(pair.taskID);
+            }
+        }
+    }
+
+    private void SetInfoPanelIcon(int taskID)
+    {
+        var tree = TaskManager.instance?.TaskTree;
+        if (tree == null) return;
+
+        var node = tree.GetNodeById(taskID);
+        if (node == null) return;
+
+        var icon = node.TaskIcon;
+        if (icon == null) return;
+        foreach (var wrapperPair in infoPanelFunctionWrappers)
+        {
+            var wrapper = wrapperPair.functionWrapper;
+            if (wrapper == null) continue;
+
+            var pairs = wrapper.GetInfoPanelPairs();
+            foreach (var pair in pairs)
+            {
+                if (pair.taskID == taskID)
+                {
+                    wrapper.SetInfoPanelIcon(taskID, icon);
+                    return;
+                }
             }
         }
     }

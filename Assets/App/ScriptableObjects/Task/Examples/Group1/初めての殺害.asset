@@ -28,7 +28,9 @@ MonoBehaviour:
   targetEnemies:
   - id: 1
     count: 1
-  rewardItems: []
-  isCompleted: 0
-  isActive: 0
+  rewardItems:
+  - id: 1
+    count: 1
+  isCompleted: 1
+  isActive: 1
   isDelivered: 0
