@@ -39,17 +39,17 @@ public class Move : MonoBehaviour
         {
             rb.AddForce(Vector2.right * moveForce, ForceMode2D.Force);
         }
-        if (rb.velocity.magnitude > maxSpeed)
+        if (rb.linearVelocity.magnitude > maxSpeed)
         {
-            rb.velocity = rb.velocity.normalized * maxSpeed;
+            rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
         }
-        Vector2 v = rb.velocity;
+        Vector2 v = rb.linearVelocity;
         if (wAxis == 0 && sAxis == 0)
         v.y = 0;
         if (aAxis == 0 && dAxis == 0)
         v.x = 0;
         
-        rb.velocity = v;
+        rb.linearVelocity = v;
 
 
     }
