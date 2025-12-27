@@ -8,14 +8,15 @@ public class InfoPanelManager : MonoBehaviour
     [SerializeField] private List<InfoPanelText> infoPanelTexts;
     [SerializeField] private Image TaskIcon;
     [SerializeField] private Button ActivateButton;
-    [SerializeField] private Button ConpleteButton;
+    [SerializeField] private Button DeliverButton;
+    [SerializeField] private Button CompleteButton;
 
     [SerializeField][Header("自動割当・書き込み禁止")] private List<InfoPanelManager> infoPanels;
     public void Initialize(List<InfoPanelManager> allInfoPanels)
     {
         infoPanels = allInfoPanels;
     }
-    public void SetInfoPanelTexts(string taskStatus, string isAlternative, string taskTitle, string taskDescription, string taskNeed, string taskReward)
+    public void SetInfoPanelTexts(string taskStatus, string isAlternative, string taskTitle, string taskType, string taskDescription, string taskNeed, string taskReward)
     {
         foreach (var panelText in infoPanelTexts)
         {
@@ -30,6 +31,9 @@ public class InfoPanelManager : MonoBehaviour
                 case InfoPanelTextType.TaskTitle:
                     panelText.uiText.text = taskTitle;
                     break;
+                case InfoPanelTextType.TaskType:
+                    panelText.uiText.text = taskType;
+                    break;
                 case InfoPanelTextType.TaskDescription:
                     panelText.uiText.text = taskDescription;
                     break;
@@ -42,23 +46,47 @@ public class InfoPanelManager : MonoBehaviour
             }
         }
     }
-
+    public void UpdateInfoPanelStatus(string taskStatus)
+    {
+        foreach (var panelText in infoPanelTexts)
+        {
+            if (panelText.textType == InfoPanelTextType.TaskStatus)
+            {
+                panelText.uiText.text = taskStatus;
+                break;
+            }
+        }
+    }
     public void SetInfoPanelIcon(Sprite icon)
     {
         TaskIcon.sprite = icon;
     }
 
-    public void SetFunctionToActivateButton(UnityEngine.Events.UnityAction action)
+    public void SetFunctionToActivateButton(List<UnityEngine.Events.UnityAction> actions)
     {
         ActivateButton.onClick.RemoveAllListeners();
-        ActivateButton.onClick.AddListener(action);
+        foreach (var action in actions)
+        {
+            ActivateButton.onClick.AddListener(action);
+        }
     }
-    public void SetFunctionToCompleteButton(UnityEngine.Events.UnityAction action)
+    public void SetFunctionToCompleteButton(List<UnityEngine.Events.UnityAction> actions)
     {
-        ConpleteButton.onClick.RemoveAllListeners();
-        ConpleteButton.onClick.AddListener(action);
+        CompleteButton.onClick.RemoveAllListeners();
+        foreach (var action in actions)
+        {
+            CompleteButton.onClick.AddListener(action);
+        }
     }
 
+    public void SetFunctionToDeliverButton(List<UnityEngine.Events.UnityAction> actions)
+    {
+        DeliverButton.onClick.RemoveAllListeners();
+        foreach (var action in actions)
+        {
+            DeliverButton.onClick.AddListener(action);
+        }
+    }
     public void ToggleInfoPanel()
     {
         if (infoPanel.activeSelf)

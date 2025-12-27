@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using System.Linq; // 追加
+using System.Linq;
+using System.Collections.Generic;
 
 public class TaskTreeTab : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class TaskTreeTab : MonoBehaviour
     [SerializeField] private GameObject taskTreeTabObject;
     [SerializeField] private GameObject taskTreeSelectButtonObject;
     [SerializeField] private TaskTreeUIGroup[] taskTreeUIGroupsPrefab;
+    [SerializeField][Header("自動割当・書き込み禁止")] private List<InfoPanelFunctionWrapperPair> infoPanelFunctionWrappers = new List<InfoPanelFunctionWrapperPair>();
     private TaskTreeUIGroup[] taskTreeUIGroups;
 
     private void Start()
@@ -30,6 +32,7 @@ public class TaskTreeTab : MonoBehaviour
         }
         GenerateTaskTreeUIGroups();
         GenerateTaskTreeSelectButtons();
+        InitializeInfoPanel();
     }
     private void Update()
     {
@@ -81,6 +84,12 @@ public class TaskTreeTab : MonoBehaviour
             }
 
             var groupObject = Instantiate(targetTaskTreeUIGroupsPrefab.groupObject, taskTreeTabObject.transform);
+            var functionWrapper = groupObject.GetComponent<InfoPanelFunctionWrapper>();
+            infoPanelFunctionWrappers.Add(new InfoPanelFunctionWrapperPair
+            {
+                groupID = groupIDs[i],
+                functionWrapper = functionWrapper
+            });
             taskTreeUIGroups[i] = new TaskTreeUIGroup
             {
                 groupID = groupIDs[i],
@@ -96,6 +105,171 @@ public class TaskTreeTab : MonoBehaviour
                 groupObject.GetComponent<Canvas>().enabled = false;
             }
         }
+    }
+
+    private void InitializeInfoPanel()
+    {
+        var tree = TaskManager.instance?.TaskTree;
+        if (tree == null) return;
+
+        foreach (var wrapperPair in infoPanelFunctionWrappers)
+        {
+            var wrapper = wrapperPair.functionWrapper;
+            if (wrapper == null) continue;
+
+            var pairs = wrapper.GetInfoPanelPairs();
+            foreach (var pair in pairs)
+            {
+                var node = tree.GetNodeById(pair.taskID);
+                if (node == null) continue;
+
+                var status = GetStatusText(node);
+                var isAlt = IsAlternativeChild(node) ? "代替" : "";
+                var title = node.TaskName;
+                var type = BuildTaskTypeText(node);
+                var description = node.Description;
+                var need = BuildNeedsText(node);
+                var reward = BuildRewardsText(node);
+
+                wrapper.SetInfoPanelTexts(pair.taskID, status, isAlt, title, type, description, need, reward);
+                SetInfoPanelButtonFunctions(pair.taskID);
+            }
+        }
+    }
+
+    private void SetInfoPanelButtonFunctions(int taskID)
+    {
+        var tree = TaskManager.instance?.TaskTree;
+        if (tree == null) return;
+
+        var node = tree.GetNodeById(taskID);
+        if (node == null) return;
+
+        var activateActions = new List<UnityEngine.Events.UnityAction>
+        {
+            () => TaskManager.instance.ActivateTask(taskID),
+            () => UpdateAllInfoPanelStatus()
+        };
+        var completeActions = new List<UnityEngine.Events.UnityAction>
+        {
+            () => TaskManager.instance.CompleteTask(taskID),
+            () => UpdateAllInfoPanelStatus()
+        };
+        var deliverActions = new List<UnityEngine.Events.UnityAction>
+        {
+            () => TaskManager.instance.DeliverTask(taskID),
+            () => UpdateAllInfoPanelStatus()
+        };
+
+        foreach (var wrapperPair in infoPanelFunctionWrappers)
+        {
+            var wrapper = wrapperPair.functionWrapper;
+            if (wrapper == null) continue;
+
+            var pairs = wrapper.GetInfoPanelPairs();
+            foreach (var pair in pairs)
+            {
+                if (pair.taskID == taskID)
+                {
+                    wrapper.SetFunctionToActivateButton(taskID, activateActions);
+                    wrapper.SetFunctionToCompleteButton(taskID, completeActions);
+                    wrapper.SetFunctionToDeliverButton(taskID, deliverActions);
+                    return;
+                }
+            }
+        }
+    }
+
+    private void UpdateAllInfoPanelStatus()
+    {
+        foreach (var wrapperPair in infoPanelFunctionWrappers)
+        {
+            var wrapper = wrapperPair.functionWrapper;
+            if (wrapper == null) continue;
+
+            var pairs = wrapper.GetInfoPanelPairs();
+            foreach (var pair in pairs)
+            {
+                wrapper.UpdateInfoPanelStatus(pair.taskID, GetStatusText(TaskManager.instance.TaskTree.GetNodeById(pair.taskID)));
+            }
+        }
+    }
+
+    private string BuildTaskTypeText(TaskNode node)
+    {
+        if (node.TType == null)
+            return "なし";
+
+        var typeNames = node.TType.Select(t => t.ToString());
+        return string.Join(" / ", typeNames);
+    }
+
+    // 状態テキスト
+    private string GetStatusText(TaskNode node)
+    {
+        var status = "";
+
+        // メイン状態
+        if (node.IsCompleted)
+            status = "完了";
+        else if (TaskManager.instance.IsCompletableTask(node.ID))
+            status = "完了可能";
+        else if (node.IsActive)
+            status = "進行中";
+        else if (TaskManager.instance.IsAvailableTask(node.ID))
+            status = "受注可能";
+        else
+            status = "未開始";
+
+        // 配達済みを追加
+        if (node.IsDelivered)
+            status += " / 配達済み";
+        else if (TaskManager.instance.IsDeliverableTask(node.ID))
+            status += " / 配達可能";
+        else if (TaskManager.instance.IsDeliverTypeTask(node.ID))
+            status += " / 未配達";
+
+        return status;
+    }
+
+    // 代替子かどうか
+    private bool IsAlternativeChild(TaskNode node)
+    {
+        var parents = node.ParentTasks ?? System.Array.Empty<TaskNode>();
+        foreach (var p in parents)
+        {
+            if (p == null) continue;
+            if (p.IsHavingAlternativeChildren &&
+                p.AlternativeChildTasks != null &&
+                p.AlternativeChildTasks.Contains(node))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 必要条件（収集・討伐）
+    private string BuildNeedsText(TaskNode node)
+    {
+        var parts = new List<string>();
+        var reqItems = node.RequiredItems ?? new List<TaskNode.CountById>();
+        var targets = node.TargetEnemies ?? new List<TaskNode.CountById>();
+
+        foreach (var i in reqItems) parts.Add($"収集: {i.id} x{i.count}");
+        foreach (var e in targets) parts.Add($"討伐: {e.id} x{e.count}");
+
+        return parts.Count > 0 ? string.Join(" / ", parts) : "なし";
+    }
+
+    // 報酬
+    private string BuildRewardsText(TaskNode node)
+    {
+        var rewards = node.RewardItems ?? new List<TaskNode.CountById>();
+        if (rewards.Count == 0) return "なし";
+        var parts = new List<string>();
+        foreach (var r in rewards) parts.Add($"報酬: {r.id} x{r.count}");
+        return string.Join(" / ", parts);
     }
 
     private void SwitchTaskTreeGroup(int groupID)
@@ -149,5 +323,11 @@ public class TaskTreeTab : MonoBehaviour
     {
         public int groupID;
         public GameObject groupObject;
+    }
+
+    private struct InfoPanelFunctionWrapperPair
+    {
+        public int groupID;
+        public InfoPanelFunctionWrapper functionWrapper;
     }
 }

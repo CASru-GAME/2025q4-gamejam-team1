@@ -57,6 +57,8 @@ public class TaskManager : MonoBehaviour
         {
             activeTasks.Add(node);
             activatedTaskProgressInfos.Add(new ActivatedTaskProgressInfo(nodeId));
+            availableTasks.Remove(node);
+            availableTasks = GetAvailableTasks();
         }
     }
 
@@ -91,6 +93,41 @@ public class TaskManager : MonoBehaviour
         return true;
     }
 
+    public bool IsAvailableTask(int nodeID)
+    {
+        var node = taskTree.GetNodeById(nodeID);
+        return availableTasks.Contains(node);
+    }
+
+    public bool IsActiveTask(int nodeID)
+    {
+        var node = taskTree.GetNodeById(nodeID);
+        return activeTasks.Contains(node);
+    }
+
+    public bool IsCompletedTask(int nodeID)
+    {
+        var node = taskTree.GetNodeById(nodeID);
+        return completedTasks.Contains(node);
+    }
+
+    public bool IsDeliveredTask(int nodeID)
+    {
+        var node = taskTree.GetNodeById(nodeID);
+        return deliveredTasks.Contains(node);
+    }
+    public bool IsCompletableTask(int nodeID)
+    {
+        var node = taskTree.GetNodeById(nodeID);
+        var progressInfo = activatedTaskProgressInfos.Find(info => info.nodeId == nodeID);
+        return IsCompletableTask(node, progressInfo);
+    }
+    public bool IsDeliverTypeTask(int nodeID)
+    {
+        var node = taskTree.GetNodeById(nodeID);
+        if (node.TType == null) return false;
+        return Array.Exists(node.TType, t => t == TaskNode.TaskType.Deliver);
+    }
     public List<TaskNode> GetAvailableTasks(int? groupId = null, bool includeAlreadyActive = false)
     {
         if (taskTree == null) return new List<TaskNode>();
@@ -122,6 +159,10 @@ public class TaskManager : MonoBehaviour
 
     private bool IsCompletableTask(TaskNode node, ActivatedTaskProgressInfo progressInfo)
     {
+        if (activeTasks.Contains(node) == false)
+        {
+            return false;
+        }
         if (node.TType != null)
         {
             foreach (var t in node.TType)
