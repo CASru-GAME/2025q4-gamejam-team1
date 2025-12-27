@@ -67,6 +67,7 @@ public class InfoPanelManager : MonoBehaviour
         }
         else
         {
+            GetComponent<RectTransform>().SetAsLastSibling();
             ShowInfoPanel(infoPanel);
             foreach (var panel in infoPanels)
             {
