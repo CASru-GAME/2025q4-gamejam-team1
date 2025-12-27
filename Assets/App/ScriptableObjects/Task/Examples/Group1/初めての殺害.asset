@@ -10,22 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7f53b4bc95d67140953a6072b5c2350, type: 3}
-  m_Name: 1_1_1_2
+  m_Name: "\u521D\u3081\u3066\u306E\u6BBA\u5BB3"
   m_EditorClassIdentifier: Assembly-CSharp::TaskNode
-  id: 5
-  taskType: 
+  id: 2
+  taskType: 01000000
   taskGroupID: 1
-  neededCompletedParentTasks: 1
-  taskName: 1_1_1_2
+  neededCompletedParentTasks: 0
+  taskName: "\u521D\u3081\u3066\u306E\u6BBA\u5BB3"
   taskIcon: {fileID: 0}
-  description: 
-  isHavingAlternativeChildren: 0
+  description: "\u6575\u3092\u4E00\u4F53\u5012\u305D\u3046"
+  isHavingAlternativeChildren: 1
   alternativeChildTasks: []
-  childTasks: []
-  parentTasks:
-  - {fileID: 11400000, guid: 6c8d0bb004dbfef429ea027426d7f501, type: 2}
+  childTasks:
+  - {fileID: 11400000, guid: 8525dbac4053db542852c2d5f03b933b, type: 2}
+  parentTasks: []
   requiredItems: []
-  targetEnemies: []
+  targetEnemies:
+  - id: 1
+    count: 1
   rewardItems: []
   isCompleted: 0
   isActive: 0
