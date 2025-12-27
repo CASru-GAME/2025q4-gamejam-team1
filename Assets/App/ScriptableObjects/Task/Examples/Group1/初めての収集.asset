@@ -21,8 +21,8 @@ MonoBehaviour:
   description: "\u306F\u3063\u3071\u3092\u4E00\u3064\u96C6\u3081\u3088\u3046"
   isHavingAlternativeChildren: 1
   alternativeChildTasks:
-  - {fileID: 11400000, guid: 6c8d0bb004dbfef429ea027426d7f501, type: 2}
-  - {fileID: 11400000, guid: 8925d7d576583d8448627770bf6d1765, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
   childTasks: []
   parentTasks:
   - {fileID: 11400000, guid: af7aec4995c275842ba5b16e90d7e4e5, type: 2}
