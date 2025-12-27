@@ -3,13 +3,18 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+
+
 
 public class StatusContoroller : MonoBehaviour
 {
     public Status CurrentStatus;
     [SerializeField] GameObject Player;
+    [SerializeField] Transform AttackPos;
+    [SerializeField] GameObject AttackPrefab;
     private Move moveScript;
-    private DoAttack attack;
+    //private DoAttack attack;
     private HP hp;
     private Stamina stamina;
 
@@ -19,7 +24,7 @@ public class StatusContoroller : MonoBehaviour
         CurrentStatus = Status.Born;
         hp = new HP(3);
         stamina = new Stamina(10);
-        attack = new DoAttack();
+        //attack = new DoAttack();
         moveScript = Player.GetComponent<Move>();
         moveScript.DebugLog();
         UnityEngine.Debug.Log("initialized");
@@ -39,18 +44,22 @@ public class StatusContoroller : MonoBehaviour
                 if(Keyboard.current.wKey.isPressed)
                 {
                     moveScript.wAxis = 1;
+                    AttackPos.localPosition = new Vector3(0f, 0.5f, 0f);
                 }
                 if(Keyboard.current.aKey.isPressed)
                 {
                     moveScript.aAxis = 1;
+                    AttackPos.localPosition = new Vector3(-0.5f, 0f, 0f);
                 }
                 if(Keyboard.current.sKey.isPressed)
                 {
                     moveScript.sAxis = 1;
+                    AttackPos.localPosition = new Vector3(0f, -0.5f, 0f);
                 }
                 if(Keyboard.current.dKey.isPressed)
                 {
                     moveScript.dAxis = 1;
+                    AttackPos.localPosition = new Vector3(0.5f, 0f, 0f);
                 }
             }
         }
@@ -88,14 +97,27 @@ public class StatusContoroller : MonoBehaviour
                 CurrentStatus = Status.Attack;
                 Debug.Log("Attack");
                 //Attack(); 攻撃用の関数は後で実装
+                Instantiate(AttackPrefab, AttackPos.position, AttackPos.rotation);
                 CurrentStatus = Status.Idle;
                 //攻撃終了後Idleに戻す
             }
-            if(Keyboard.current.tabKey.wasPressedThisFrame)
+            if(Keyboard.current.eKey.wasPressedThisFrame)
             {
                 CurrentStatus = Status.Inventory;
                 Debug.Log("Inventory");
                 //Inventory(); インベントリを開く関数(後で実装)
+            }
+
+            if(Keyboard.current.digit1Key.wasPressedThisFrame || Keyboard.current.digit2Key.wasPressedThisFrame ||Keyboard.current.digit3Key.wasPressedThisFrame || Keyboard.current.digit4Key.wasPressedThisFrame ||Keyboard.current.digit5Key.wasPressedThisFrame )
+            {
+                CurrentStatus = Status.ItemCunsume;
+                Debug.Log("Item");
+                CurrentStatus = Status.Idle;
+            }
+
+            if(Keyboard.current.rKey.wasPressedThisFrame)
+            {
+                
             }
         }
 
@@ -105,7 +127,7 @@ public class StatusContoroller : MonoBehaviour
             {
                 CurrentStatus = Status.Idle;
                 Debug.Log("Inventory to Idle");
-                //CloseInventory(); インベントリを閉じる関数(後で実装)
+                
             }
         }
 
@@ -114,12 +136,13 @@ public class StatusContoroller : MonoBehaviour
             CurrentStatus = Status.Dead;
             Debug.Log("Dead");
             //死んだときの処理
+            SceneManager.LoadScene("Title");
         }
 
     }
 
     public enum Status
     {    
-        Born, Idle, Move, Attack, Damaged, Inventory, Item, Dead, 
+        Born, Idle, Move, Attack, Damaged, Inventory, PickUpItem,ItemCunsume, Dead, 
     }
 }

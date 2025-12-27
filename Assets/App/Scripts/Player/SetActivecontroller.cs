@@ -1,19 +1,23 @@
 using UnityEngine;
 
-public class Attack : MonoBehaviour
+public class SetActivecontroller : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        Invoke("DisableSelf", 1f);
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        /*if(other.CompareTag("Enemy"))
-        {
-            
-        }*/
+        
     }
+
+     void DisableSelf()
+    {
+        gameObject.SetActive(false);
+    }
+
 }

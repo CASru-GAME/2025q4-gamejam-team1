@@ -8,6 +8,8 @@ public class Move : MonoBehaviour
     public int sAxis;
     public int dAxis;
     private Rigidbody2D rb;
+    public float moveForce = 10f;     // 加える力の大きさ
+    public float maxSpeed = 5f;  
     void Start()
     {
         rb = this.transform.GetComponent<Rigidbody2D> ();
@@ -21,8 +23,35 @@ public class Move : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector2 dir = new Vector2(dAxis - aAxis, wAxis - sAxis);
-        rb.velocity = dir.normalized * 5f;
+       if (wAxis == 1)
+        {
+            rb.AddForce(Vector2.up * moveForce, ForceMode2D.Force);
+        }
+        if (aAxis == 1)
+        {
+            rb.AddForce(Vector2.left * moveForce, ForceMode2D.Force);
+        }
+        if (sAxis == 1)
+        {
+            rb.AddForce(Vector2.down * moveForce, ForceMode2D.Force);
+        }
+        if (dAxis == 1)
+        {
+            rb.AddForce(Vector2.right * moveForce, ForceMode2D.Force);
+        }
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
+        Vector2 v = rb.velocity;
+        if (wAxis == 0 && sAxis == 0)
+        v.y = 0;
+        if (aAxis == 0 && dAxis == 0)
+        v.x = 0;
+        
+        rb.velocity = v;
+
+
     }
     
     public void DebugLog()
