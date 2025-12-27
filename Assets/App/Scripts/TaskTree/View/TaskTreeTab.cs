@@ -63,6 +63,7 @@ public class TaskTreeTab : MonoBehaviour
         if (keyboard.tabKey.wasPressedThisFrame)
         {
             taskTreeTabObject.GetComponent<Canvas>().enabled = !taskTreeTabObject.GetComponent<Canvas>().enabled;
+            Time.timeScale = taskTreeTabObject.GetComponent<Canvas>().enabled ? 0f : 1f;
         }
     }
 
