@@ -23,7 +23,7 @@ public class TaskManager : MonoBehaviour
         ResetAllTasks();
     }
 
-    public void CompleteTask(int nodeId, int killCount = 0, int collectCount = 0)
+    public void CompleteTask(int nodeId)
     {
         var node = taskTree.GetNodeById(nodeId);
         if (node.IsCompleted) return;
@@ -184,6 +184,7 @@ public class TaskManager : MonoBehaviour
                         var defeatedEnemy = progressInfo.defeatedEnemies.Find(e => e.id == enemy.id);
                         if (defeatedEnemy == null || defeatedEnemy.count < enemy.count)
                         {
+                            Debug.LogWarning($"タスク '{node.TaskName}' の対象敵の討伐数が不足しています。必要数: {enemy.count}, 現在の数: {defeatedEnemy?.count ?? 0}");
                             return false;
                         }
                     }
@@ -237,6 +238,7 @@ public class TaskManager : MonoBehaviour
                 if (item.id == itemId)
                 {
                     item.count += count;
+                    Debug.Log($"アイテムID:{itemId}の収集数が{count}増加。現在の収集数:{item.count}");
                     return;
                 }
             }
@@ -249,6 +251,7 @@ public class TaskManager : MonoBehaviour
                 if (enemy.id == enemyId)
                 {
                     enemy.count += count;
+                    Debug.Log($"敵ID:{enemyId}の討伐数が{count}増加。現在の討伐数:{enemy.count}");
                     return;
                 }
             }

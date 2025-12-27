@@ -45,6 +45,7 @@ public class PlayerStatistics : MonoBehaviour
             if (colletedItems[i].id == itemID)
             {
                 colletedItems[i].count += count;
+                onItemCollected?.Invoke(itemID, colletedItems[i].count);
                 return;
             }
         }
@@ -60,6 +61,7 @@ public class PlayerStatistics : MonoBehaviour
             if (defeatedEnemies[i].id == enemyID)
             {
                 defeatedEnemies[i].count += count;
+                onEnemyDefeated?.Invoke(enemyID, defeatedEnemies[i].count);
                 return;
             }
         }
