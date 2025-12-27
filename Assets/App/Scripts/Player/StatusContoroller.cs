@@ -14,6 +14,7 @@ public class StatusContoroller : MonoBehaviour
     [SerializeField] Transform AttackPos;
     [SerializeField] GameObject AttackPrefab;
     private Move moveScript;
+    private PickUpItem pickUpItemScript;
     //private DoAttack attack;
     private HP hp;
     private Stamina stamina;
@@ -26,6 +27,7 @@ public class StatusContoroller : MonoBehaviour
         stamina = new Stamina(10);
         //attack = new DoAttack();
         moveScript = Player.GetComponent<Move>();
+        pickUpItemScript = Player.GetComponent<PickUpItem>();
         moveScript.DebugLog();
         UnityEngine.Debug.Log("initialized");
         CurrentStatus = Status.Idle;
@@ -90,7 +92,7 @@ public class StatusContoroller : MonoBehaviour
             }
         }
 
-        if(CurrentStatus == Status.Idle || CurrentStatus == Status.Move)
+        else if(CurrentStatus == Status.Idle || CurrentStatus == Status.Move)
         {
             if(Keyboard.current.fKey.wasPressedThisFrame)
             {
@@ -105,7 +107,7 @@ public class StatusContoroller : MonoBehaviour
             {
                 CurrentStatus = Status.Inventory;
                 Debug.Log("Inventory");
-                //Inventory(); インベントリを開く関数(後で実装)
+                Inventory.Instance.ShowInventory();
             }
 
             if(Keyboard.current.digit1Key.wasPressedThisFrame || Keyboard.current.digit2Key.wasPressedThisFrame ||Keyboard.current.digit3Key.wasPressedThisFrame || Keyboard.current.digit4Key.wasPressedThisFrame ||Keyboard.current.digit5Key.wasPressedThisFrame )
@@ -116,22 +118,32 @@ public class StatusContoroller : MonoBehaviour
             }
 
             if(Keyboard.current.rKey.wasPressedThisFrame)
-            {
-                
+            { 
+                Inventory.Instance.AddItem(pickUpItemScript.ItemID, pickUpItemScript.Count);
             }
         }
 
-        if(CurrentStatus == Status.Inventory)
+        /*else if(CurrentStatus == Status.Inventory)
         {
-            if(Keyboard.current.tabKey.wasPressedThisFrame)
+            if(Keyboard.current.eKey.wasPressedThisFrame)
             {
-                CurrentStatus = Status.Idle;
                 Debug.Log("Inventory to Idle");
-                
+                Inventory.Instance.ShowInventory();
+                CurrentStatus = Status.Idle;
+            }
+        }*/
+
+        else if(CurrentStatus == Status.Inventory)
+        {
+            if(Keyboard.current.eKey.wasPressedThisFrame)
+            {
+                Debug.Log("Inventory to Idle");
+                CurrentStatus = Status.Idle;
+                Inventory.Instance.HideInventory();
             }
         }
 
-        if(hp.CurrentHP == 0)
+        else if(hp.CurrentHP == 0)
         {
             CurrentStatus = Status.Dead;
             Debug.Log("Dead");
