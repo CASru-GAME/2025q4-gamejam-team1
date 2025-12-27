@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Linq;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class TaskTreeTab : MonoBehaviour
 {
@@ -177,6 +178,18 @@ public class TaskTreeTab : MonoBehaviour
                     return;
                 }
             }
+        }
+    }
+
+    private void DropRewardItems(int taskID)
+    {
+        var node = TaskManager.instance.TaskTree.GetNodeById(taskID);
+        if (node == null) return;
+
+        var rewards = node.RewardItems ?? new List<TaskNode.CountById>();
+        foreach (var r in rewards)
+        {
+            ItemInstantiater.InstantiateItem(Camera.main.transform.position, r.id, r.count);
         }
     }
 

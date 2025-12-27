@@ -276,4 +276,3 @@ public class TaskManager : MonoBehaviour
         public int count;
     }
 }
-
