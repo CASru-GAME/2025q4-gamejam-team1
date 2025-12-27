@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
-using NUnit.Framework;
 
 public class TaskManager : MonoBehaviour
 {
@@ -211,6 +210,11 @@ public class TaskManager : MonoBehaviour
         completedTasks.Clear();
         deliveredTasks.Clear();
         availableTasks = GetAvailableTasks();
+        Debug.Log("availableTaskCount:" + availableTasks.Count);
+        foreach (var t in availableTasks)
+        {
+            Debug.Log("availableTask:" + t.TaskName);
+        }
     }
 
     private void OnDestroy()

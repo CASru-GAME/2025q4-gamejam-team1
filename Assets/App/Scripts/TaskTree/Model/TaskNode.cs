@@ -22,6 +22,7 @@ public class TaskNode : ScriptableObject
     public TaskType[] TType => taskType;
     public int TaskGroupID => taskGroupID;
     public NeededCompletedParentTasks NeededCompletedParents => neededCompletedParentTasks;
+    public Sprite TaskIcon => taskIcon;
     public string TaskName => taskName;
     public string Description => description;
     public bool IsHavingAlternativeChildren => isHavingAlternativeChildren;
