@@ -31,7 +31,7 @@ MonoBehaviour:
   rewardItems:
   - id: 2
     count: 1
-  isCompleted: 1
-  isActive: 1
+  isCompleted: 0
+  isActive: 0
   isDelivered: 0
-  isRewarded: 1
+  isRewarded: 0
