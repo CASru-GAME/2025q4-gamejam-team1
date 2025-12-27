@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class IndividualTaskTreeView : MonoBehaviour
+public class TaskTreeLineGenerator : MonoBehaviour
 {
     [SerializeField] private int groupID;
     [SerializeField] private NodeObjectPair[] nodeObjectPairs;
@@ -15,14 +15,8 @@ public class IndividualTaskTreeView : MonoBehaviour
 
     [Header("Edge settings")]
     [SerializeField] private GameObject edgePrefab;   // LineRenderer を持つプレハブ
-    [SerializeField] private bool useWorldSpace = true;
-    [SerializeField] private bool useCanvasUI = true;  // 追加：Canvas UI モード
-    [SerializeField] private bool autoUpdate = false;
     [SerializeField] private Color edgeFromColor = Color.white;
     [SerializeField] private Color edgeToColor = Color.white;
-    [SerializeField] private bool useNodeObjectColor = false;
-    [SerializeField] private bool forceMaterialColor = false;
-    [SerializeField] private Material edgeMaterial;
     [SerializeField] private float canvasLineWidth = 2f;  // 追加：Canvas 線幅
 
     [Header("Links (from -> to)")]
@@ -52,6 +46,24 @@ public class IndividualTaskTreeView : MonoBehaviour
         public Transform to;
     }
 
+    public List<InfoPanelPair> GetInfoPanelPairs()
+    {
+        var result = new List<InfoPanelPair>();
+
+        foreach (var pair in nodeObjectPairs)
+        {
+            if (pair.nodeObject == null) continue;
+
+            var infoPanelManager = pair.nodeObject.GetComponent<InfoPanelManager>();
+            if (infoPanelManager != null)
+            {
+                result.Add(new InfoPanelPair(infoPanelManager, pair.nodeID));
+            }
+        }
+
+        return result;
+    }
+
     public void ClearEdges()
     {
         foreach (var e in _edges)
@@ -75,29 +87,19 @@ public class IndividualTaskTreeView : MonoBehaviour
     // 子階層に残っている LineRenderer を一掃
     private void CleanupOrphanEdges()
     {
-        if (useCanvasUI)
+        // 追加：再コンパイル直後など _edges が空のときは掃除しない
+        if (_edges.Count == 0) return;
+
+        var tracked = new HashSet<Image>(_edges.Where(x => x.image).Select(x => x.image));
+        var images = GetComponentsInChildren<Image>(true);
+        foreach (var img in images)
         {
-            var tracked = new HashSet<Image>(_edges.Where(x => x.image).Select(x => x.image));
-            var images = GetComponentsInChildren<Image>(true);
-            foreach (var img in images)
-            {
-                if (img.name.StartsWith("Edge_") && !tracked.Contains(img))
-                    SafeDestroy(img.gameObject);
-            }
-        }
-        else
-        {
-            var tracked = new HashSet<LineRenderer>(_edges.Where(x => x.line).Select(x => x.line));
-            var lrs = GetComponentsInChildren<LineRenderer>(true);
-            foreach (var lr in lrs)
-            {
-                if (!tracked.Contains(lr))
-                    SafeDestroy(lr.gameObject);
-            }
+            if (img.name.StartsWith("Edge_") && !tracked.Contains(img))
+                SafeDestroy(img.gameObject);
         }
     }
 
-    [ContextMenu("Build / Update Edges")]
+    [ContextMenu("Build Or Update Edges")]
     private void BuildOrUpdateEdges()
     {
         RefreshLinksFromTaskTree();
@@ -105,10 +107,7 @@ public class IndividualTaskTreeView : MonoBehaviour
 
         if (_edges.Count == 0)
         {
-            if (useCanvasUI)
-                BuildCanvasEdges(links.Select(l => (l.fromId, l.toId)));
-            else
-                BuildEdges(links.Select(l => (l.fromId, l.toId)));
+            BuildCanvasEdges(links.Select(l => (l.fromId, l.toId)));
         }
         else
         {
@@ -116,105 +115,18 @@ public class IndividualTaskTreeView : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (!autoUpdate) return;
-        ApplyAllEdgePositions();
-    }
-
     private void ApplyAllEdgePositions()
     {
         foreach (var e in _edges)
         {
-            if (useCanvasUI)
+            if (e.image && e.from && e.to)
             {
-                if (e.image && e.from && e.to)
-                {
-                    var fromRect = e.from.GetComponent<RectTransform>();
-                    var toRect = e.to.GetComponent<RectTransform>();
-                    if (fromRect && toRect)
-                        ApplyCanvasLinePositions(e.image.rectTransform, fromRect, toRect);
-                }
-            }
-            else
-            {
-                if (e.line && e.from && e.to)
-                    ApplyPositions(e.line, e.from, e.to);
+                var fromRect = e.from.GetComponent<RectTransform>();
+                var toRect = e.to.GetComponent<RectTransform>();
+                if (fromRect && toRect)
+                    ApplyCanvasLinePositions(e.image.rectTransform, fromRect, toRect);
             }
         }
-    }
-
-    /// <summary>
-    /// (fromId, toId) のリストを渡すとエッジを生成します。
-    /// </summary>
-    public void BuildEdges(IEnumerable<(int fromId, int toId)> links)
-    {
-        ClearEdges();
-
-        if (!ValidateEdgePrefab())
-            return;
-
-        var map = BuildNodeMap();
-
-        int created = 0;
-        int skipped = 0;
-
-        foreach (var (fromId, toId) in links)
-        {
-            if (!map.TryGetValue(fromId, out var fromTf) || !map.TryGetValue(toId, out var toTf))
-            {
-                Debug.LogWarning($"リンクをスキップ: Transform 未検出 fromId={fromId}, toId={toId}。nodeObjectPairs を確認してください。");
-                skipped++;
-                continue;
-            }
-
-            var edgeGO = Instantiate(edgePrefab, transform);
-            var lr = edgeGO.GetComponent<LineRenderer>();
-            if (lr == null)
-            {
-                Debug.LogWarning("edgePrefab に LineRenderer がありません。");
-                Destroy(edgeGO);
-                skipped++;
-                continue;
-            }
-
-            // 追加：推奨シェーダのマテリアルを適用
-            if (edgeMaterial != null)
-            {
-                lr.material = edgeMaterial;
-            }
-            else if (lr.material == null)
-            {
-                Debug.LogWarning("LineRenderer のマテリアルが未設定です。URP 対応の Unlit や Sprites/Default を割り当ててください。");
-            }
-
-            lr.useWorldSpace = useWorldSpace;
-
-            // グラデーション適用（from側→to側）
-            var (fromColor, toColor) = ResolveEdgeColors(fromTf, toTf);
-            lr.startColor = fromColor;
-            lr.endColor = toColor;
-
-            // より確実にグラデーションを適用（頂点カラー対応シェーダ前提）
-            var grad = new Gradient();
-            grad.SetKeys(
-                new[] { new GradientColorKey(fromColor, 0f), new GradientColorKey(toColor, 1f) },
-                new[] { new GradientAlphaKey(fromColor.a, 0f), new GradientAlphaKey(toColor.a, 1f) }
-            );
-            lr.colorGradient = grad;
-
-            // 頂点カラー非対応シェーダ用フォールバック（単色）
-            if (forceMaterialColor && lr.material != null && lr.material.HasProperty("_Color"))
-            {
-                lr.material.color = fromColor;
-            }
-
-            ApplyPositions(lr, fromTf, toTf);
-            _edges.Add(new EdgeRecord { line = lr, from = fromTf, to = toTf });
-            created++;
-        }
-
-        Debug.Log($"Edge 生成: 作成={created}, スキップ={skipped}, 入力リンク数={links.Count()}");
     }
 
     /// <summary>
@@ -248,13 +160,20 @@ public class IndividualTaskTreeView : MonoBehaviour
 
             var lineGO = new GameObject($"Edge_{fromId}_to_{toId}");
             lineGO.transform.SetParent(transform, false);
+            lineGO.transform.localScale = Vector3.one;
 
             var image = lineGO.AddComponent<Image>();
-            var (fromColor, toColor) = ResolveEdgeColors(fromTf, toTf);
+            image.raycastTarget = false;
+            image.type = Image.Type.Sliced;
+
+            var fromColor = edgeFromColor;
+            var toColor = edgeToColor;
             image.color = fromColor;
 
             var rectTf = lineGO.GetComponent<RectTransform>();
-            ApplyCanvasLinePositions(rectTf, fromRect, toRect);
+            var canvas = GetComponentInParent<Canvas>();
+            var scale = canvas ? canvas.scaleFactor : 1f;
+            ApplyCanvasLinePositions(rectTf, fromRect, toRect, scale);
 
             _edges.Add(new EdgeRecord { image = image, from = fromTf, to = toTf });
             created++;
@@ -263,10 +182,11 @@ public class IndividualTaskTreeView : MonoBehaviour
         Debug.Log($"Canvas Edge 生成: 作成={created}, スキップ={skipped}");
     }
 
+
     /// <summary>
     /// Canvas 線の位置・角度・サイズを更新
     /// </summary>
-    private void ApplyCanvasLinePositions(RectTransform lineRect, RectTransform fromRect, RectTransform toRect)
+    private void ApplyCanvasLinePositions(RectTransform lineRect, RectTransform fromRect, RectTransform toRect, float scale = 1f)
     {
         var fromPos = fromRect.anchoredPosition;
         var toPos = toRect.anchoredPosition;
@@ -274,27 +194,11 @@ public class IndividualTaskTreeView : MonoBehaviour
         var distance = direction.magnitude;
         var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-        lineRect.sizeDelta = new Vector2(distance, canvasLineWidth);
+        lineRect.sizeDelta = new Vector2(distance, canvasLineWidth * scale); // 幅にスケールを反映
         lineRect.anchoredPosition = (fromPos + toPos) / 2f;
         lineRect.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
-
-    private void ApplyPositions(LineRenderer lr, Transform from, Transform to)
-    {
-        if (lr.positionCount < 2) lr.positionCount = 2;
-
-        if (useWorldSpace)
-        {
-            lr.SetPosition(0, from.position);
-            lr.SetPosition(1, to.position);
-        }
-        else
-        {
-            lr.SetPosition(0, transform.InverseTransformPoint(from.position));
-            lr.SetPosition(1, transform.InverseTransformPoint(to.position));
-        }
-    }
-
+    
     private void RefreshLinksFromTaskTree()
     {
         if (taskTreeModel == null)
@@ -411,10 +315,12 @@ public class IndividualTaskTreeView : MonoBehaviour
             };
         }
 
+        InitializeInfoPanelsFromNodes();   // 追加：生成後に全 InfoPanelManager を初期化
+
         // シリアライズ反映
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         UnityEditor.EditorUtility.SetDirty(this);
-        #endif
+#endif
 
         Debug.Log($"GroupID {groupID} の {groupNodes.Count} ノードを自動生成し、nodeObjectPairs を更新しました。");
     }
@@ -427,49 +333,12 @@ public class IndividualTaskTreeView : MonoBehaviour
         {
             if (!e.line || !e.from || !e.to) continue;
 
-            var (fromColor, toColor) = ResolveEdgeColors(e.from, e.to);
+            var fromColor = edgeFromColor;
+            var toColor = edgeToColor;
+
             e.line.startColor = fromColor;
             e.line.endColor = toColor;
-
-            if (forceMaterialColor && e.line.material != null && e.line.material.HasProperty("_Color"))
-            {
-                e.line.material.color = fromColor;
-            }
         }
-    }
-
-    // 追加：ノードから色を取得して使うヘルパー
-    private (Color from, Color to) ResolveEdgeColors(Transform fromTf, Transform toTf)
-    {
-        var from = edgeFromColor;
-        var to = edgeToColor;
-
-        if (useNodeObjectColor)
-        {
-            var cFrom = TryGetObjectColor(fromTf);
-            var cTo = TryGetObjectColor(toTf);
-            if (cFrom.HasValue) from = cFrom.Value;
-            if (cTo.HasValue) to = cTo.Value;
-        }
-        return (from, to);
-    }
-
-    private Color? TryGetObjectColor(Transform tf)
-    {
-        // SpriteRenderer
-        var sr = tf.GetComponent<SpriteRenderer>();
-        if (sr != null) return sr.color;
-
-        // UI（Image/Text等）
-        var g = tf.GetComponent<UnityEngine.UI.Graphic>();
-        if (g != null) return g.color;
-
-        // MeshRenderer（_Color プロパティを持つマテリアル）
-        var r = tf.GetComponent<Renderer>();
-        if (r != null && r.material != null && r.material.HasProperty("_Color"))
-            return r.material.color;
-
-        return null;
     }
 
     private Dictionary<int, Transform> BuildNodeMap()
@@ -509,9 +378,22 @@ public class IndividualTaskTreeView : MonoBehaviour
         Debug.Log($"検証: TaskTreeModel={(hasModel ? "OK" : "None")}, groupID={groupID}, nodeMapCount={map.Count}, linksCount={links?.Count ?? 0}, edgePrefabHasLR={ValidateEdgePrefab()}");
     }
 
-    private void OnDisable()
+    // 追加：生成されたノード上の InfoPanelManager を一括初期化
+    private void InitializeInfoPanelsFromNodes()
     {
-        // 無効化・切り替え時に残骸が出ないように
-        ClearEdges();
+        var managers = new List<InfoPanelManager>();
+
+        foreach (var pair in nodeObjectPairs)
+        {
+            if (pair.nodeObject == null) continue;
+            var mgr = pair.nodeObject.GetComponent<InfoPanelManager>();
+            if (mgr != null) managers.Add(mgr);
+        }
+
+        // 取得できた全パネルへ同一リストを渡す
+        foreach (var mgr in managers)
+        {
+            mgr.Initialize(managers);
+        }
     }
 }

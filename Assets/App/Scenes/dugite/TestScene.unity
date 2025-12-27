@@ -244,6 +244,7 @@ MonoBehaviour:
   quickCanvas: {fileID: 1147293880}
   craftPanelPrefab: {fileID: 3035411652190993417, guid: 9b62fd089601222499b0e748799cf7f4, type: 3}
   craftCanvas: {fileID: 1423037037}
+  shopCanvas: {fileID: 0}
   selectedItem: {fileID: 2077782452}
   selectedItemCanvas: {fileID: 1636185699}
 --- !u!114 &154299618
@@ -1199,9 +1200,7 @@ MonoBehaviour:
   - groupID: 1
     groupObject: {fileID: 1411575641365471392, guid: a0512ec4b33c3c949b1d71462da23bcc, type: 3}
   - groupID: 2
-    groupObject: {fileID: 1411575641365471392, guid: b336a125042beea478a48ba16c432eee, type: 3}
-  - groupID: 3
-    groupObject: {fileID: 1411575641365471392, guid: 10b891f316c05bb46b185b66377cc36c, type: 3}
+    groupObject: {fileID: 1411575641365471392, guid: a4e38f8ce46eb3d418c008ed5c52286b, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
