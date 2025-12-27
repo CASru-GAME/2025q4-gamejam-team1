@@ -36,7 +36,22 @@ public class TaskTreeTab : MonoBehaviour
         GenerateTaskTreeUIGroups();
         GenerateTaskTreeSelectButtons();
         InitializeInfoPanel();
+        PlayerStatistics.instance.SubscribeToItemCollected(OnItemCollected);
+        PlayerStatistics.instance.SubscribeToEnemyDefeated(OnEnemyDefeated);
     }
+
+    private void OnItemCollected(int itemID, int count)
+    {
+        Debug.Log($"TaskTreeTab: アイテムID:{itemID}が{count}個収集されました。");
+        UpdateAllInfoPanelStatus();
+    }
+
+    private void OnEnemyDefeated(int enemyID, int count)
+    {
+        Debug.Log($"TaskTreeTab: 敵ID:{enemyID}が{count}体討伐されました。");
+        UpdateAllInfoPanelStatus();
+    }
+
     private void Update()
     {
         var keyboard = Keyboard.current;
