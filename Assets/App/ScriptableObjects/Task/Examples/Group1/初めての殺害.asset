@@ -20,9 +20,12 @@ MonoBehaviour:
   taskIcon: {fileID: -2466426667224977961, guid: f8e00a67be2372f42a234d0095948fd6, type: 3}
   description: "\u6575\u3092\u4E00\u4F53\u5012\u305D\u3046"
   isHavingAlternativeChildren: 1
-  alternativeChildTasks: []
+  alternativeChildTasks:
+  - {fileID: 11400000, guid: 8525dbac4053db542852c2d5f03b933b, type: 2}
+  - {fileID: 11400000, guid: 871896a7ee581224180b52f94c25e721, type: 2}
   childTasks:
   - {fileID: 11400000, guid: 8525dbac4053db542852c2d5f03b933b, type: 2}
+  - {fileID: 11400000, guid: 871896a7ee581224180b52f94c25e721, type: 2}
   parentTasks: []
   requiredItems: []
   targetEnemies:
