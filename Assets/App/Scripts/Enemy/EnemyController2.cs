@@ -54,6 +54,7 @@ public class EnemyController2
         ItemInstantiater.InstantiateItem(dropPosition, itemID, itemCount);
 
         Debug.Log($"敵が死亡。ID:{itemID}を{itemCount}個ドロップ");
+        PlayerStatistics.instance.DefeatEnemy(enemyID, 1);
         //敵を削除する
         Object.Destroy(transform.gameObject);
     }
