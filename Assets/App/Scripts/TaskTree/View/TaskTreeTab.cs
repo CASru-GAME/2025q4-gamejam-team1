@@ -13,6 +13,7 @@ public class TaskTreeTab : MonoBehaviour
     [SerializeField] private GameObject taskTreeSelectButtonObject;
     [SerializeField] private TaskTreeUIGroup[] taskTreeUIGroupsPrefab;
     [SerializeField] private ItemDatabase itemDatabase;
+    [SerializeField] private EnemyDatabase enemyDatabase;
     [SerializeField][Header("自動割当・書き込み禁止")] private List<InfoPanelFunctionWrapperPair> infoPanelFunctionWrappers = new List<InfoPanelFunctionWrapperPair>();
     private TaskTreeUIGroup[] taskTreeUIGroups;
 
@@ -214,6 +215,8 @@ public class TaskTreeTab : MonoBehaviour
     private void DropRewardItems(int taskID)
     {
         var node = TaskManager.instance.TaskTree.GetNodeById(taskID);
+        if (node.IsCompleted == false) return;
+        if (node.IsRewarded) return;
         if (node == null) return;
 
         var rewards = node.RewardItems ?? new List<TaskNode.CountById>();
@@ -221,6 +224,7 @@ public class TaskTreeTab : MonoBehaviour
         {
             ItemInstantiater.InstantiateItem(Camera.main.transform.position, r.id, r.count);
         }
+        node.Reward();
     }
 
     private void UpdateAllInfoPanelStatus()
@@ -300,7 +304,7 @@ public class TaskTreeTab : MonoBehaviour
         var targets = node.TargetEnemies ?? new List<TaskNode.CountById>();
 
         foreach (var i in reqItems) parts.Add($"収集: {itemDatabase.GetName(i.id)} x{i.count}");
-        foreach (var e in targets) parts.Add($"討伐: {e.id} x{e.count}");
+        foreach (var e in targets) parts.Add($"討伐: {enemyDatabase.GetName(e.id)} x{e.count}");
 
         return parts.Count > 0 ? string.Join(" / ", parts) : "なし";
     }

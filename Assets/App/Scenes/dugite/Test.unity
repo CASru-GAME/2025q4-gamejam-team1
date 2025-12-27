@@ -820,7 +820,8 @@ MonoBehaviour:
   taskTreeUIGroupsPrefab:
   - groupID: 1
     groupObject: {fileID: 1411575641365471392, guid: a0512ec4b33c3c949b1d71462da23bcc, type: 3}
-  itemDatabase: {fileID: 11400000, guid: 939506d9c4d7ef44a9dd609f16d68e5e, type: 2}
+  itemDatabase: {fileID: 0}
+  enemyDatabase: {fileID: 0}
 --- !u!114 &1294079334
 MonoBehaviour:
   m_ObjectHideFlags: 0
