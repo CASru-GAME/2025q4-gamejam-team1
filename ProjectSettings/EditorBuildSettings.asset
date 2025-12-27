@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/App/Scenes/Riku/PlayerScene.unity
     guid: 3fb6b20d7e62e4e40b48784b0f04f5bf
+  - enabled: 1
+    path: Assets/App/Scenes/Riku/Title.unity
+    guid: 3136df0f8e8f83543850717aebc99912
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

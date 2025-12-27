@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 41992422}
   - component: {fileID: 41992424}
   - component: {fileID: 41992423}
+  - component: {fileID: 41992425}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -294,6 +295,18 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+--- !u!114 &41992425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41992418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94c47c15c17fcc940842e6f467f8ab98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PickUpItem
 --- !u!1 &182028624
 GameObject:
   m_ObjectHideFlags: 0
