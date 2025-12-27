@@ -78,11 +78,11 @@ public class EnemyController1
             // 見た目の向き（左右反転）だけを制御する
             if (moveDirection.x > 0)
             {
-                transform.localScale = new Vector3(1, 1, 1);
+                transform.localScale = new Vector3(-1, 1, 1);
             }
             else if (moveDirection.x < 0)
             {
-                transform.localScale = new Vector3(-1, 1, 1);
+                transform.localScale = new Vector3(1, 1, 1);
             }
         
             // 移動を実行
