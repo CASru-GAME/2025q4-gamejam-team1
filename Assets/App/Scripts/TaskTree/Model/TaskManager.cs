@@ -64,6 +64,12 @@ public class TaskManager : MonoBehaviour
     public void DeliverTask(int nodeId)
     {
         var node = taskTree.GetNodeById(nodeId);
+        if (node.IsDelivered) return;
+        if (node.IsActive == false)
+        {
+            Debug.LogWarning($"タスク '{node.TaskName}' はアクティブではありません。");
+            return;
+        }
         if (IsDeliverableTask(nodeId) == false) return;
         node.Deliver();
         foreach (var item in node.RequiredItems)

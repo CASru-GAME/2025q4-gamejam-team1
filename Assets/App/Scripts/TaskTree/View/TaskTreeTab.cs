@@ -287,7 +287,7 @@ public class TaskTreeTab : MonoBehaviour
         // 配達済みを追加
         if (node.IsDelivered)
             status += " / 配達済み";
-        else if (TaskManager.instance.IsDeliverableTask(node.ID))
+        else if (TaskManager.instance.IsDeliverableTask(node.ID) && node.IsActive)
             status += " / 配達可能";
         else if (TaskManager.instance.IsDeliverTypeTask(node.ID))
             status += " / 未配達";
