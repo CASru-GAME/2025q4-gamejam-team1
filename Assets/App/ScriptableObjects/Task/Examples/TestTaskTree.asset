@@ -15,6 +15,7 @@ MonoBehaviour:
   nodes:
   - {fileID: 11400000, guid: af7aec4995c275842ba5b16e90d7e4e5, type: 2}
   - {fileID: 11400000, guid: 8525dbac4053db542852c2d5f03b933b, type: 2}
+  - {fileID: 11400000, guid: 871896a7ee581224180b52f94c25e721, type: 2}
   taskTreeGroupUsageInfos:
   - groupID: 1
     isUsed: 1

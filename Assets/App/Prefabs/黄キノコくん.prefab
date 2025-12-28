@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1776308265720039823}
   m_Layer: 0
   m_Name: "\u9EC4\u30AD\u30CE\u30B3\u304F\u3093"
-  m_TagString: Player
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -170,6 +170,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94c47c15c17fcc940842e6f467f8ab98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PickUpItem
+  ItemID: 0
+  Count: 0
 --- !u!114 &1776308265720039823
 MonoBehaviour:
   m_ObjectHideFlags: 0

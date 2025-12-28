@@ -36,17 +36,13 @@ public class TaskNode : ScriptableObject
     [SerializeField] private bool isCompleted = false;
     [SerializeField] private bool isActive = false;
     [SerializeField] private bool isDelivered = false;
+    [SerializeField] private bool isRewarded = false;
     public bool IsCompleted => isCompleted;
     public bool IsActive => isActive;
     public bool IsDelivered => isDelivered;
-
+    public bool IsRewarded => isRewarded;
     public void Complete()
     {
-        if (!CheckCompletable())
-        {
-            Debug.LogWarning($"タスク '{taskName}' を完了できません。");
-            return;
-        }
         isCompleted = true;
     }
     public void Activate()
@@ -57,11 +53,16 @@ public class TaskNode : ScriptableObject
     {
         isDelivered = true;
     }
+    public void Reward()
+    {
+        isRewarded = true;
+    }
     public void ResetStatus()
     {
         isActive = false;
         isCompleted = false;
         isDelivered = false;
+        isRewarded = false;
     }
 
     /// <summary>
