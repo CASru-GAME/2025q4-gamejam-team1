@@ -9,6 +9,7 @@ public class EnemyController2
     private int itemID;
     private int itemCount;
     private int enemyID;
+    private bool isDead = false;
 
     // HPを外部から確認できるようにする
     public int CurrentHP => hpSystem.CurrentHP;
@@ -48,6 +49,8 @@ public class EnemyController2
     // 死亡時の処理
     private void Die()
     {
+        if (isDead) return; // 既に死亡処理が行われていたら何もしない
+        isDead = true;
         //死亡時の座標を取得
         Vector2 dropPosition = transform.position;
         //static関数を呼び出してアイテムを生成

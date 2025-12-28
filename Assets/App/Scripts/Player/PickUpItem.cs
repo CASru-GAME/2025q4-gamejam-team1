@@ -4,6 +4,7 @@ public class PickUpItem : MonoBehaviour
 {
     public int ItemID;
     public int Count;
+    public GameObject Item;
     void Start()
     {
         
@@ -24,6 +25,7 @@ public class PickUpItem : MonoBehaviour
         {
             ItemID = item.ItemID;
             Count = item.Count;
+            Item = other.gameObject;
             Debug.Log("アイテムにID: " + ItemID);
             Debug.Log("アイテムにCount: " + Count);
         }

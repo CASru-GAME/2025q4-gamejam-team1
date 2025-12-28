@@ -153,6 +153,7 @@ public class StatusContoroller : MonoBehaviour
             if(Keyboard.current.rKey.wasPressedThisFrame)
             { 
                 Inventory.Instance.AddItem(pickUpItemScript.ItemID, pickUpItemScript.Count);
+                Destroy(pickUpItemScript.Item);
             }
 
         }
