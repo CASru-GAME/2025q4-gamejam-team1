@@ -18,6 +18,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 871896a7ee581224180b52f94c25e721, type: 2}
   - {fileID: 11400000, guid: 0e9e4205ccd959d4784ef8ddae898e93, type: 2}
   - {fileID: 11400000, guid: 086a1f3c050ea9443bb7ac687bc32927, type: 2}
+  - {fileID: 11400000, guid: 61b97272b8d45c047a737c808618990b, type: 2}
   taskTreeGroupUsageInfos:
   - groupID: 1
     isUsed: 1
