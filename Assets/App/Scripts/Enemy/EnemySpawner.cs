@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private EnemyDatabase enemyDatabase;
     [SerializeField] private float spawnInterval = 10f;
     [SerializeField] private int maxNearbyEnemies = 5;
     [SerializeField] private float detectionRadius = 5f;
@@ -38,7 +38,7 @@ public class EnemySpawner : MonoBehaviour
             {
                 var r = Random.Range(0f, 2f * Mathf.PI);
                 var spawnPos = new Vector2(Mathf.Cos(r), Mathf.Sin(r)) * detectionRadius;
-                Instantiate(enemyPrefab, (Vector2)transform.position + spawnPos, Quaternion.identity);
+                Instantiate(enemyDatabase.GetRandomPrefab(), (Vector2)transform.position + spawnPos, Quaternion.identity);
             } 
         }
     }
