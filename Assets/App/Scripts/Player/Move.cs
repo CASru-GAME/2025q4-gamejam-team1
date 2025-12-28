@@ -30,6 +30,7 @@ public class Move : MonoBehaviour
         if (aAxis == 1)
         {
             rb.AddForce(Vector2.left * moveForce, ForceMode2D.Force);
+            rb.gameObject.transform.localScale = new Vector3(1, 1, 1);
         }
         if (sAxis == 1)
         {
@@ -38,6 +39,7 @@ public class Move : MonoBehaviour
         if (dAxis == 1)
         {
             rb.AddForce(Vector2.right * moveForce, ForceMode2D.Force);
+            rb.gameObject.transform.localScale = new Vector3(-1, 1, 1);
         }
         if (rb.linearVelocity.magnitude > maxSpeed)
         {
