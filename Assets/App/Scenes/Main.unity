@@ -1775,6 +1775,7 @@ GameObject:
   - component: {fileID: 2113553547}
   - component: {fileID: 2113553546}
   - component: {fileID: 2113553552}
+  - component: {fileID: 2113553553}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1968,6 +1969,22 @@ MonoBehaviour:
   spawnInterval: 10
   maxNearbyEnemies: 2
   detectionRadius: 5
+--- !u!114 &2113553553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113553545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ba1ee9fcc2f37542a11a37d87594c3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusContoroller
+  CurrentStatus: 0
+  Player: {fileID: 2113553545}
+  AttackPos: {fileID: 2077812525}
+  AttackPrefab: {fileID: 2564272034579774282, guid: dd56e26e3211b7e4ead7c7051777ec00, type: 3}
 --- !u!1001 &6120620389786078832
 PrefabInstance:
   m_ObjectHideFlags: 0

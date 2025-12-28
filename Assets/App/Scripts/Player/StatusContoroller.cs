@@ -26,7 +26,7 @@ public class StatusContoroller : MonoBehaviour
     void Start()
     {
         CurrentStatus = Status.Born;
-        hp = new HP(3);
+        hp = new HP(10);
         stamina = new Stamina(10);
         //attack = new DoAttack();
         moveScript = Player.GetComponent<Move>();
@@ -198,7 +198,7 @@ public class StatusContoroller : MonoBehaviour
             {
                 Debug.Log("敵からの攻撃");
                 CurrentStatus = Status.Damaged;
-                hp.Damage(10);
+                hp.Damage(1);
                 Debug.Log("現在のHP = "+ hp.CurrentHP);
                 ReturnToIdleAfterDelay(delay);
             }
