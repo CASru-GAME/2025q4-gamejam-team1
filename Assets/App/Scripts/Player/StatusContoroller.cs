@@ -186,8 +186,10 @@ public class StatusContoroller : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("敵と接触1");
         if (collision.CompareTag("Enemy"))
         {
+            Debug.Log("敵と接触2");
             if(CurrentStatus == Status.Damaged)
             {
                 return;
