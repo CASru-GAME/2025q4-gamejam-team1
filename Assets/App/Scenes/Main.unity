@@ -579,54 +579,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 286872928}
   m_CullTransparentMesh: 1
---- !u!1 &392450219
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 392450221}
-  - component: {fileID: 392450220}
-  m_Layer: 0
-  m_Name: StatusController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &392450220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 392450219}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ba1ee9fcc2f37542a11a37d87594c3e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StatusContoroller
-  CurrentStatus: 0
-  Player: {fileID: 2113553545}
-  AttackPos: {fileID: 2077812525}
-  AttackPrefab: {fileID: 2564272034579774282, guid: dd56e26e3211b7e4ead7c7051777ec00, type: 3}
---- !u!4 &392450221
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 392450219}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.83683, y: 0.62215, z: 0.30252}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &411567385
 GameObject:
   m_ObjectHideFlags: 0
@@ -1797,6 +1749,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PickUpItem
   ItemID: 0
   Count: 0
+  Item: {fileID: 0}
 --- !u!50 &2113553547
 Rigidbody2D:
   serializedVersion: 5
@@ -1965,7 +1918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41ad3e6537c3f5e47ae519929916a7e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  enemyPrefab: {fileID: 3940446076983711914, guid: 90a335f09886f834e9545a51e737c464, type: 3}
+  enemyDatabase: {fileID: 11400000, guid: 4d6be7f69999011429bf37f062b72fae, type: 2}
   spawnInterval: 10
   maxNearbyEnemies: 2
   detectionRadius: 5
@@ -2080,7 +2033,6 @@ SceneRoots:
   - {fileID: 1423037038}
   - {fileID: 1914393624}
   - {fileID: 447721177}
-  - {fileID: 392450221}
   - {fileID: 2113553551}
   - {fileID: 6120620389786078832}
   - {fileID: 1306941020}

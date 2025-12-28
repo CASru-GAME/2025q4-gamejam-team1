@@ -34,28 +34,28 @@ public class Inventory : MonoBehaviour
         instance = this;
         itemModels = new ItemModel[inventoryCapacity + 3 + boxCapacity];
         itemInInventory = new ItemInInventory[inventoryCapacity + 3 + boxCapacity];
-        
+
         for (int i = 0; i < inventoryCapacity + 3 + boxCapacity; i++)
         {
             GameObject itemSpace = Instantiate(itemSpacePrefab, transform);
 
-            if(i < quickSlotCapacity)
+            if (i < quickSlotCapacity)
                 itemSpace.transform.SetParent(quickCanvas.transform);
-            else if(i < inventoryCapacity)
+            else if (i < inventoryCapacity)
                 itemSpace.transform.SetParent(inventoryCanvas.transform);
-            else if(i < inventoryCapacity + 3)
+            else if (i < inventoryCapacity + 3)
                 itemSpace.transform.SetParent(quickCanvas.transform);
             else
                 itemSpace.transform.SetParent(boxCanvas.transform);
 
 
-            if(i < quickSlotCapacity)
+            if (i < quickSlotCapacity)
                 itemSpace.GetComponent<RectTransform>().anchoredPosition = new Vector2(-400 + i * 50, -150);
-            else if(i < inventoryCapacity)
+            else if (i < inventoryCapacity)
                 itemSpace.GetComponent<RectTransform>().anchoredPosition = new Vector2(-400 + i % quickSlotCapacity * 50, 200 - i / quickSlotCapacity * 50);
-            else if(i < inventoryCapacity + 3)
+            else if (i < inventoryCapacity + 3)
                 itemSpace.GetComponent<RectTransform>().anchoredPosition = new Vector2(-400 + (i - inventoryCapacity) * 50, -200);
-            else 
+            else
                 itemSpace.GetComponent<RectTransform>().anchoredPosition = new Vector2(-100 + (i - inventoryCapacity - 3) % quickSlotCapacity * 50, 150);
             itemInInventory[i] = itemSpace.GetComponent<ItemInInventory>();
             itemInInventory[i].Initialize(i);
@@ -85,7 +85,10 @@ public class Inventory : MonoBehaviour
         AddItem(4, 1);
         AddItem(5, 1);
         AddItem(6, 100);
-        
+        AddItem(13, 1);
+        AddItem(12, 1);
+        AddItem(15, 1);
+
         isOnCraft = false;
         isOnShop = false;
         isOnBox = false;
@@ -216,7 +219,7 @@ public class Inventory : MonoBehaviour
         int tmpCount = count;
         for (int i = 0; i < inventoryCapacity; i++)
             if (itemModels[i] != null && itemModels[i].ItemID == itemID && itemModels[i].Count < itemDatabase.GetMaxStack(itemID) && tmpCount > 0)
-                if(tmpCount + itemModels[i].Count > itemDatabase.GetMaxStack(itemID))
+                if (tmpCount + itemModels[i].Count > itemDatabase.GetMaxStack(itemID))
                 {
                     int diff = itemDatabase.GetMaxStack(itemID) - itemModels[i].Count;
                     tmpCount -= diff;
@@ -234,7 +237,7 @@ public class Inventory : MonoBehaviour
 
         for (int i = 0; i < inventoryCapacity; i++)
             if (itemModels[i] == null && tmpCount > 0)
-                if(tmpCount > itemDatabase.GetMaxStack(itemID))
+                if (tmpCount > itemDatabase.GetMaxStack(itemID))
                 {
                     int diff = itemDatabase.GetMaxStack(itemID);
                     tmpCount -= diff;
@@ -249,7 +252,7 @@ public class Inventory : MonoBehaviour
                     itemInInventory[i].AddNew(itemID, tmpCount, i);
                     return;
                 }
-        
+
         if (tmpCount == 0) return;
         ItemInstantiater.InstantiateItem((Vector2)Camera.main.transform.position, itemID, tmpCount);
     }
@@ -257,7 +260,7 @@ public class Inventory : MonoBehaviour
     public bool CanRemoveItem(int itemID, int count)
     {
         int tmpCount = 0;
-        for(int i = 0; i < inventoryCapacity; i++)
+        for (int i = 0; i < inventoryCapacity; i++)
             if (itemModels[i] != null && itemModels[i].ItemID == itemID)
                 tmpCount += itemModels[i].Count;
         return tmpCount >= count;
@@ -268,7 +271,7 @@ public class Inventory : MonoBehaviour
         int tmpCount = count;
         for (int i = 0; i < inventoryCapacity; i++)
             if (itemModels[i] != null && itemModels[i].ItemID == itemID && tmpCount > 0)
-                if(itemModels[i].Count <= tmpCount)
+                if (itemModels[i].Count <= tmpCount)
                 {
                     tmpCount -= itemModels[i].Count;
                     itemModels[i] = itemModels[i].AddCount(-itemModels[i].Count);
@@ -297,23 +300,23 @@ public class Inventory : MonoBehaviour
 
     public bool CanSwap(int index)
     {
-        if(!inventoryCanvas.enabled) return false;
-        if(index < inventoryCapacity || index >= inventoryCapacity + 3 || selectedItemModel == null) return true;
+        if (!inventoryCanvas.enabled) return false;
+        if (index < inventoryCapacity || index >= inventoryCapacity + 3 || selectedItemModel == null) return true;
 
         int specialIndex = index - inventoryCapacity;
-        if(specialIndex == 0 && itemDatabase.IsItemType(selectedItemModel.ItemID, ItemData.ItemType.Weapon)) return true;
-        if(specialIndex == 1 && itemDatabase.IsItemType(selectedItemModel.ItemID, ItemData.ItemType.Armor)) return true;
-        if(specialIndex == 2 && itemDatabase.IsItemType(selectedItemModel.ItemID, ItemData.ItemType.Foot)) return true;
+        if (specialIndex == 0 && itemDatabase.IsItemType(selectedItemModel.ItemID, ItemData.ItemType.Weapon)) return true;
+        if (specialIndex == 1 && itemDatabase.IsItemType(selectedItemModel.ItemID, ItemData.ItemType.Armor)) return true;
+        if (specialIndex == 2 && itemDatabase.IsItemType(selectedItemModel.ItemID, ItemData.ItemType.Foot)) return true;
 
         return false;
     }
 
     public void SwapItem(int index)
     {
-        if(itemModels[index] != null && selectedItemModel != null && itemModels[index].ItemID == selectedItemModel.ItemID)
+        if (itemModels[index] != null && selectedItemModel != null && itemModels[index].ItemID == selectedItemModel.ItemID)
         {
             int sumCount = itemModels[index].Count + selectedItemModel.Count;
-            if(sumCount <= itemDatabase.GetMaxStack(selectedItemModel.ItemID))
+            if (sumCount <= itemDatabase.GetMaxStack(selectedItemModel.ItemID))
             {
                 itemModels[index] = itemModels[index].AddCount(selectedItemModel.Count);
                 itemInInventory[index].UpdateCount(itemModels[index].Count);

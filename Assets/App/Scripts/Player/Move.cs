@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 public class Move : MonoBehaviour
@@ -9,21 +10,22 @@ public class Move : MonoBehaviour
     public int dAxis;
     private Rigidbody2D rb;
     public float moveForce = 10f;     // 加える力の大きさ
-    public float maxSpeed = 5f;  
+    public float maxSpeed = 5f;
     void Start()
     {
-        rb = this.transform.GetComponent<Rigidbody2D> ();
+        rb = this.transform.GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void FixedUpdate()
     {
-       if (wAxis == 1)
+        var tempspeed = maxSpeed + Inventory.Instance.GetFootMoveSpeed();
+        if (wAxis == 1)
         {
             rb.AddForce(Vector2.up * moveForce, ForceMode2D.Force);
         }
@@ -41,21 +43,19 @@ public class Move : MonoBehaviour
             rb.AddForce(Vector2.right * moveForce, ForceMode2D.Force);
             rb.gameObject.transform.localScale = new Vector3(-1, 1, 1);
         }
-        if (rb.linearVelocity.magnitude > maxSpeed)
+        if (rb.linearVelocity.magnitude > tempspeed)
         {
-            rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
+            rb.linearVelocity = rb.linearVelocity.normalized * tempspeed;
         }
         Vector2 v = rb.linearVelocity;
         if (wAxis == 0 && sAxis == 0)
-        v.y = 0;
+            v.y = 0;
         if (aAxis == 0 && dAxis == 0)
-        v.x = 0;
-        
+            v.x = 0;
+
         rb.linearVelocity = v;
-
-
     }
-    
+
     public void DebugLog()
     {
         Debug.Log("参照成功");
