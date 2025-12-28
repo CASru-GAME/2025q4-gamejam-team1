@@ -22,4 +22,10 @@ public class EnemyDatabase : ScriptableObject
                 return enemyPrefab.GetComponent<SpriteRenderer>().sprite;
         return null;
     }
+
+    public GameObject GetRandomPrefab()
+    {
+        int index = UnityEngine.Random.Range(0, enemyPrefabs.Length);
+        return enemyPrefabs[index];
+    }
 }
