@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 
 
@@ -19,11 +20,13 @@ public class StatusContoroller : MonoBehaviour
     private HP hp;
     private Stamina stamina;
 
+    private float delay = 1.0f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         CurrentStatus = Status.Born;
-        hp = new HP(3);
+        hp = new HP(10);
         stamina = new Stamina(10);
         //attack = new DoAttack();
         moveScript = Player.GetComponent<Move>();
@@ -36,7 +39,7 @@ public class StatusContoroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(CurrentStatus == Status.Idle)
+        if(CurrentStatus == Status.Idle )
         {
             if(Keyboard.current.wKey.isPressed || Keyboard.current.aKey.isPressed ||Keyboard.current.sKey.isPressed || Keyboard.current.dKey.isPressed )
             {
@@ -92,6 +95,36 @@ public class StatusContoroller : MonoBehaviour
             }
         }
 
+        else if(CurrentStatus == Status.Damaged)
+        {
+            if(Keyboard.current.wKey.isPressed || Keyboard.current.aKey.isPressed ||Keyboard.current.sKey.isPressed || Keyboard.current.dKey.isPressed )
+            {
+                CurrentStatus = Status.Move;
+                Debug.Log("currentStatus = Move");
+                
+                if(Keyboard.current.wKey.isPressed)
+                {
+                    moveScript.wAxis = 1;
+                    AttackPos.localPosition = new Vector3(0f, 0.5f, 0f);
+                }
+                if(Keyboard.current.aKey.isPressed)
+                {
+                    moveScript.aAxis = 1;
+                    AttackPos.localPosition = new Vector3(-0.5f, 0f, 0f);
+                }
+                if(Keyboard.current.sKey.isPressed)
+                {
+                    moveScript.sAxis = 1;
+                    AttackPos.localPosition = new Vector3(0f, -0.5f, 0f);
+                }
+                if(Keyboard.current.dKey.isPressed)
+                {
+                    moveScript.dAxis = 1;
+                    AttackPos.localPosition = new Vector3(0.5f, 0f, 0f);
+                }
+            }
+        }
+
         else if(CurrentStatus == Status.Idle || CurrentStatus == Status.Move)
         {
             if(Keyboard.current.fKey.wasPressedThisFrame)
@@ -121,17 +154,8 @@ public class StatusContoroller : MonoBehaviour
             { 
                 Inventory.Instance.AddItem(pickUpItemScript.ItemID, pickUpItemScript.Count);
             }
-        }
 
-        /*else if(CurrentStatus == Status.Inventory)
-        {
-            if(Keyboard.current.eKey.wasPressedThisFrame)
-            {
-                Debug.Log("Inventory to Idle");
-                Inventory.Instance.ShowInventory();
-                CurrentStatus = Status.Idle;
-            }
-        }*/
+        }
 
         else if(CurrentStatus == Status.Inventory)
         {
@@ -151,10 +175,46 @@ public class StatusContoroller : MonoBehaviour
             SceneManager.LoadScene("Title");
         }
 
+
+
     }
 
     public enum Status
     {    
         Born, Idle, Move, Attack, Damaged, Inventory, PickUpItem,ItemCunsume, Dead, 
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log("敵と接触1");
+        if (collision.CompareTag("Enemy"))
+        {
+            Debug.Log("敵と接触2");
+            if(CurrentStatus == Status.Damaged)
+            {
+                return;
+            }
+            else
+            {
+                Debug.Log("敵からの攻撃");
+                CurrentStatus = Status.Damaged;
+                hp.Damage(1);
+                Debug.Log("現在のHP = "+ hp.CurrentHP);
+                ReturnToIdleAfterDelay(delay);
+            }
+            
+        }
+    }
+
+    private IEnumerator ReturnToIdleAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (hp.CurrentHP > 0)
+        {
+            CurrentStatus = Status.Idle;
+        }
+    }
+
+
 }
